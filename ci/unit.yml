@@ -1,0 +1,18 @@
+---
+
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: golang
+    tag: latest
+
+inputs:
+  - name: dis-redis
+
+caches:
+  - path: go/
+
+run:
+  path: dis-redis/ci/scripts/unit.sh
