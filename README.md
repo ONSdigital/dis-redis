@@ -4,6 +4,15 @@ Dissemination client library for Redis or similar protocols.
 
 ## Getting started
 
+Tests and static checks are run via:
+
+```sh
+    make audit
+    make unit
+    make lint
+    make build
+```
+
 * Run `make help` to see full list of make targets
 
 ### Dependencies
