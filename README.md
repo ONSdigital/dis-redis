@@ -8,7 +8,7 @@ Tests and static checks are run via:
 
 ```sh
     make audit
-    make unit
+    make test
     make lint
     make build
 ```
