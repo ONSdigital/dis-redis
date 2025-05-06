@@ -1,7 +1,8 @@
 # dis-redis
+
 Dissemination client library for Redis or similar protocols.
 
-### Getting started
+## Getting started
 
 * Run `make help` to see full list of make targets
 
@@ -9,13 +10,12 @@ Dissemination client library for Redis or similar protocols.
 
 * No further dependencies other than those defined in `go.mod`
 
-### Contributing
+## Contributing
 
 See [CONTRIBUTING](CONTRIBUTING.md) for details.
 
-### License
+## License
 
-Copyright © 2025, Office for National Statistics (https://www.ons.gov.uk)
+Copyright © 2025, Office for National Statistics <https://www.ons.gov.uk>
 
 Released under MIT license, see [LICENSE](LICENSE.md) for details.
-
