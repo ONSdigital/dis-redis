@@ -27,9 +27,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: WriteGoList
+      - name: Run GoList
         run: go list -json -m all > go.list
-      - name: Scan with specific Nancy version
+      - name: Run up nancy
         uses: sonatype-nexus-community/nancy-github-action@main
         with:
           nancyVersion: "v1.0.48"
@@ -53,8 +53,6 @@ jobs:
         uses: golangci/golangci-lint-action@v3
         with:
           version: v1.64.6
-      - name: Run linters
-        run: golangci-lint run ./...
 
   dis-redis-unit:
     needs: setup
