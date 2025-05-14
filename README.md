@@ -1,6 +1,26 @@
 # dis-redis
 
-Dissemination client library for Redis or similar protocols.
+Dissemination client library for Redis or similar protocols. This library can be considered a wrapper around go-redis.
+
+## redis package
+
+Includes implementation of a health checker, that reuses the redis client to check requests can be made against the redis server.
+
+### Setup dis-redis client
+
+```golang
+import disRedis "github.com/ONSdigital/dis-redis"
+
+...
+    redisClient, redisClientErr := disRedis.NewRedisClient(ctx, &disRedis.ClientConfig{
+        Address: cfg.redisURL
+    }
+    if redisClientErr != nil {
+        log.Fatal(ctx, "Failed to create dis-redis client", redisClientErr)
+    }
+...
+
+```
 
 ## Getting started
 
