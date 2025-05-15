@@ -4,7 +4,6 @@ go 1.24
 
 require (
 	github.com/ONSdigital/dp-healthcheck v1.6.4
-	github.com/ONSdigital/log.go/v2 v2.4.5
 	github.com/redis/go-redis/v9 v9.8.0
 	github.com/smartystreets/goconvey v1.8.1
 )
@@ -12,6 +11,7 @@ require (
 require (
 	github.com/ONSdigital/dp-api-clients-go/v2 v2.266.0 // indirect
 	github.com/ONSdigital/dp-net/v3 v3.2.0 // indirect
+	github.com/ONSdigital/log.go/v2 v2.4.5 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fatih/color v1.18.0 // indirect

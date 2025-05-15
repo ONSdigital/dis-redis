@@ -5,8 +5,6 @@ import (
 	"errors"
 
 	health "github.com/ONSdigital/dp-healthcheck/healthcheck"
-
-	"github.com/ONSdigital/log.go/v2/log"
 )
 
 const MsgHealthy = "redis is healthy"
@@ -24,19 +22,15 @@ func (cli *Client) Checker(ctx context.Context, state *health.CheckState) error 
 	statusCode, err := cli.healthcheck(ctx)
 	if err != nil {
 		if updateErr := state.Update(health.StatusCritical, err.Error(), statusCode); updateErr != nil {
-			log.Warn(ctx, "unable to update health state", log.FormatErrors([]error{updateErr}))
+			return updateErr
 		}
 
 		return nil
 	}
 
 	if updateErr := state.Update(health.StatusOK, MsgHealthy, statusCode); updateErr != nil {
-		log.Warn(ctx, "unable to update health state", log.FormatErrors([]error{updateErr}))
+		return updateErr
 	}
-
-	log.Info(ctx, "checkstate", log.Data{
-		"checkstate": state,
-	})
 
 	return nil
 }
