@@ -12,7 +12,7 @@ Includes implementation of a health checker, that reuses the redis client to che
 import disRedis "github.com/ONSdigital/dis-redis"
 
 ...
-    redisClient, redisClientErr := disRedis.NewRedisClient(ctx, &disRedis.ClientConfig{
+    redisClient, redisClientErr := disRedis.NewClient(ctx, &disRedis.ClientConfig{
         Address: cfg.redisURL
     }
     if redisClientErr != nil {
