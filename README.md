@@ -22,6 +22,36 @@ import disRedis "github.com/ONSdigital/dis-redis"
 
 ```
 
+### Health checker
+
+Using dis-redis checker function currently performs a PING request against redis.
+
+The healthcheck will only succeed if the request can be performend and the server responds with a PONG.
+
+Instantiate a dis-redis client
+
+```golang
+import disRedis "github.com/ONSdigital/dis-redis"
+
+...
+    cli := disRedis.NewClient(ctx, clientConfig)
+...
+```
+
+Call healthchecker with `cli.Checker(context.Background())` and this will return a check object like so:
+
+```json
+{
+    "name": "string",
+    "status": "string",
+    "message": "string",
+    "status_code": "int",
+    "last_checked": "ISO8601 - UTC date time",
+    "last_success": "ISO8601 - UTC date time",
+    "last_failure": "ISO8601 - UTC date time"
+}
+```
+
 ## Getting started
 
 Tests and static checks are run via:
