@@ -2,6 +2,7 @@ package redis
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	redis "github.com/redis/go-redis/v9"
@@ -35,4 +36,16 @@ func generateClient(clientConfig *ClientConfig) (redis.UniversalClient, error) {
 		return nil, fmt.Errorf("error getting client config: %w", err)
 	}
 	return redis.NewClient(options), nil
+}
+
+// GetValue retrieves the value for a given key from Redis and returns it as a string.
+func (cli *Client) GetValue(ctx context.Context, key string) (string, error) {
+	val, err := cli.redisClient.Get(ctx, key).Result()
+	if errors.Is(err, redis.Nil) {
+		return "", fmt.Errorf("key %s not found", key)
+	} else if err != nil {
+		return "", fmt.Errorf("error getting value for key %s: %w", key, err)
+	}
+
+	return val, nil
 }
