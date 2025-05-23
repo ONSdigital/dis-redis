@@ -49,3 +49,12 @@ func (cli *Client) GetValue(ctx context.Context, key string) (string, error) {
 
 	return val, nil
 }
+
+// GetTotalKeys returns the total number of keys in the Redis database.
+func (cli *Client) GetTotalKeys(ctx context.Context) (int64, error) {
+	count, err := cli.redisClient.DBSize(ctx).Result()
+	if err != nil {
+		return 0, fmt.Errorf("error getting total number of keys: %w", err)
+	}
+	return count, nil
+}
