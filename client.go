@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	redis "github.com/redis/go-redis/v9"
 )
@@ -48,4 +49,14 @@ func (cli *Client) GetValue(ctx context.Context, key string) (string, error) {
 	}
 
 	return val, nil
+}
+
+// SetValue sets a key-value pair in Redis with an optional expiration time.
+func (cli *Client) SetValue(ctx context.Context, key string, value interface{}, expiration time.Duration) error {
+	err := cli.redisClient.Set(ctx, key, value, expiration).Err()
+	if err != nil {
+		// Wrap and return the error from Redis
+		return fmt.Errorf("failed to set value in Redis: %w", err)
+	}
+	return nil
 }
