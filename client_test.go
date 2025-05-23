@@ -2,6 +2,7 @@ package redis
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"testing"
 	"time"
@@ -110,6 +111,48 @@ func TestClient_GetValue(t *testing.T) {
 				So(err, ShouldNotBeNil)
 				So(err.Error(), ShouldContainSubstring, "connection error")
 				So(val, ShouldBeEmpty)
+			})
+		})
+	})
+}
+
+func TestGetTotalKeys(t *testing.T) {
+	mockRedisClient := &mocks.GoRedisClientMock{}
+	client := &Client{
+		redisClient: mockRedisClient,
+	}
+
+	Convey("Given a mocked Redis client", t, func() {
+		mockRedisClient.DBSizeFunc = func(ctx context.Context) *redis.IntCmd {
+			cmd := redis.NewIntCmd(ctx)
+			cmd.SetVal(100) // Mock that there are 100 keys in the Redis DB
+			return cmd
+		}
+
+		Convey("When calling GetTotalKeys", func() {
+			totalKeys, err := client.GetTotalKeys(context.Background())
+
+			Convey("Then it should return the correct total number of keys", func() {
+				So(err, ShouldBeNil)
+				So(totalKeys, ShouldEqual, 100)
+			})
+		})
+	})
+
+	Convey("Given a mocked Redis client that returns an error", t, func() {
+		mockRedisClient.DBSizeFunc = func(ctx context.Context) *redis.IntCmd {
+			cmd := redis.NewIntCmd(ctx)
+			cmd.SetErr(errors.New("Redis error"))
+			return cmd
+		}
+
+		Convey("When calling GetTotalKeys", func() {
+			totalKeys, err := client.GetTotalKeys(context.Background())
+
+			Convey("Then it should return an error", func() {
+				So(err, ShouldNotBeNil)
+				So(totalKeys, ShouldEqual, 0)
+				So(err.Error(), ShouldContainSubstring, "Redis error")
 			})
 		})
 	})

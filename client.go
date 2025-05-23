@@ -51,6 +51,15 @@ func (cli *Client) GetValue(ctx context.Context, key string) (string, error) {
 	return val, nil
 }
 
+// GetTotalKeys returns the total number of keys in the Redis database.
+func (cli *Client) GetTotalKeys(ctx context.Context) (int64, error) {
+	count, err := cli.redisClient.DBSize(ctx).Result()
+	if err != nil {
+		return 0, fmt.Errorf("error getting total number of keys: %w", err)
+	}
+	return count, nil
+}
+
 // SetValue sets a key-value pair in Redis with an optional expiration time.
 func (cli *Client) SetValue(ctx context.Context, key string, value interface{}, expiration time.Duration) error {
 	err := cli.redisClient.Set(ctx, key, value, expiration).Err()
