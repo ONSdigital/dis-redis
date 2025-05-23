@@ -116,7 +116,7 @@ func TestClient_GetValue(t *testing.T) {
 	})
 }
 
-func TestGetTotalKeys(t *testing.T) {
+func TestClient_GetTotalKeys(t *testing.T) {
 	mockRedisClient := &mocks.GoRedisClientMock{}
 	client := &Client{
 		redisClient: mockRedisClient,
@@ -158,7 +158,7 @@ func TestGetTotalKeys(t *testing.T) {
 	})
 }
 
-func TestRedisClient_SetValue(t *testing.T) {
+func TestClient_SetValue(t *testing.T) {
 	ctx := context.Background()
 	mockRedisClient := &mocks.GoRedisClientMock{}
 	called := false // Flag to track if Set function was called
@@ -211,6 +211,69 @@ func TestRedisClient_SetValue(t *testing.T) {
 
 			Convey("Then all expected Redis commands should have been called", func() {
 				So(called, ShouldBeTrue)
+			})
+		})
+	})
+}
+
+func TestClient_DeleteValue(t *testing.T) {
+	ctx := context.Background()
+	mockRedisClient := &mocks.GoRedisClientMock{}
+	called := false // Flag to track if Del function was called
+	client := &Client{
+		redisClient: mockRedisClient,
+	}
+
+	Convey("Given a mocked Redis client", t, func() {
+		Convey("When deleting a key that exists", func() {
+			mockRedisClient.DelFunc = func(ctx context.Context, key ...string) *redis.IntCmd {
+				called = true
+				cmd := redis.NewIntCmd(ctx, "del", key)
+				cmd.SetVal(1) // Simulate successful deletion (key found)
+				return cmd
+			}
+
+			err := client.DeleteValue(ctx, "testKey")
+
+			Convey("Then it should not return an error", func() {
+				So(err, ShouldBeNil)
+			})
+
+			Convey("Then the Del function should have been called", func() {
+				So(called, ShouldBeTrue)
+			})
+		})
+
+		Convey("When deleting a key that does not exist", func() {
+			mockRedisClient.DelFunc = func(ctx context.Context, key ...string) *redis.IntCmd {
+				called = true
+				cmd := redis.NewIntCmd(ctx, "del", key)
+				cmd.SetVal(0) // Simulate key not found
+				return cmd
+			}
+
+			// Call DeleteValue function
+			err := client.DeleteValue(ctx, "nonExistingKey")
+
+			Convey("Then it should return a 'key not found' error", func() {
+				So(err, ShouldNotBeNil)
+				So(err.Error(), ShouldContainSubstring, "key not found")
+			})
+		})
+
+		Convey("When Redis returns an error", func() {
+			mockRedisClient.DelFunc = func(ctx context.Context, key ...string) *redis.IntCmd {
+				called = true
+				cmd := redis.NewIntCmd(ctx, "del", key)
+				cmd.SetErr(fmt.Errorf("connection error"))
+				return cmd
+			}
+
+			err := client.DeleteValue(ctx, "someKey")
+
+			Convey("Then it should return the correct error message", func() {
+				So(err, ShouldNotBeNil)
+				So(err.Error(), ShouldContainSubstring, "connection error")
 			})
 		})
 	})

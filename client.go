@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	redis "github.com/redis/go-redis/v9"
+	"github.com/redis/go-redis/v9"
 )
 
 type Client struct {
@@ -67,5 +67,21 @@ func (cli *Client) SetValue(ctx context.Context, key string, value interface{}, 
 		// Wrap and return the error from Redis
 		return fmt.Errorf("failed to set value in Redis: %w", err)
 	}
+	return nil
+}
+
+// DeleteValue deletes a key-value pair from Redis
+func (cli *Client) DeleteValue(ctx context.Context, key string) error {
+	// Call the Del method to delete the key
+	result, err := cli.redisClient.Del(ctx, key).Result()
+	if err != nil {
+		return fmt.Errorf("failed to delete key from Redis: %w", err)
+	}
+
+	if result == 0 {
+		// If the result is 0, it means the key does not exist
+		return fmt.Errorf("key not found: %s", key)
+	}
+
 	return nil
 }
