@@ -49,3 +49,19 @@ func (cli *Client) GetValue(ctx context.Context, key string) (string, error) {
 
 	return val, nil
 }
+
+// DeleteValue deletes a key-value pair from Redis
+func (cli *Client) DeleteValue(ctx context.Context, key string) error {
+	// Call the Del method to delete the key
+	result, err := cli.redisClient.Del(ctx, key).Result()
+	if err != nil {
+		return fmt.Errorf("failed to delete key from Redis: %w", err)
+	}
+
+	if result == 0 {
+		// If the result is 0, it means the key does not exist
+		return fmt.Errorf("key not found: %s", key)
+	}
+
+	return nil
+}
