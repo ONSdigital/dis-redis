@@ -6,7 +6,7 @@ package mocks
 import (
 	"context"
 	"github.com/ONSdigital/dis-redis/interfaces"
-	redis "github.com/redis/go-redis/v9"
+	"github.com/redis/go-redis/v9"
 	"sync"
 	"time"
 )

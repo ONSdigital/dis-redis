@@ -4,11 +4,16 @@ import (
 	"context"
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/ONSdigital/dis-redis/mocks"
-
-	redis "github.com/redis/go-redis/v9"
+	"github.com/redis/go-redis/v9"
 	. "github.com/smartystreets/goconvey/convey"
+)
+
+const (
+	TestKey   = "testKey"
+	TestValue = "testValue"
 )
 
 func TestNewClient(t *testing.T) {
@@ -61,8 +66,8 @@ func TestClient_GetValue(t *testing.T) {
 	Convey("Given a mock Redis client", t, func() {
 		mockRedisClient.GetFunc = func(ctx context.Context, key string) *redis.StringCmd {
 			cmd := redis.NewStringCmd(ctx, key)
-			if key == "testKey" {
-				cmd.SetVal("testValue")
+			if key == TestKey {
+				cmd.SetVal(TestValue)
 			} else {
 				cmd.SetErr(redis.Nil)
 			}
@@ -74,11 +79,11 @@ func TestClient_GetValue(t *testing.T) {
 		}
 
 		Convey("When the key exists", func() {
-			val, err := client.GetValue(context.Background(), "testKey")
+			val, err := client.GetValue(context.Background(), TestKey)
 
 			Convey("It should return the correct value and no error", func() {
 				So(err, ShouldBeNil)
-				So(val, ShouldEqual, "testValue")
+				So(val, ShouldEqual, TestValue)
 			})
 		})
 
@@ -105,6 +110,64 @@ func TestClient_GetValue(t *testing.T) {
 				So(err, ShouldNotBeNil)
 				So(err.Error(), ShouldContainSubstring, "connection error")
 				So(val, ShouldBeEmpty)
+			})
+		})
+	})
+}
+
+func TestRedisClient_SetValue(t *testing.T) {
+	ctx := context.Background()
+	mockRedisClient := &mocks.GoRedisClientMock{}
+	called := false // Flag to track if Set function was called
+
+	client := &Client{
+		redisClient: mockRedisClient,
+	}
+
+	Convey("Given a mocked Redis client with expiration set", t, func() {
+		Convey("When setting a key-value pair with expiration", func() {
+			mockRedisClient.SetFunc = func(ctx context.Context, key string, value interface{}, expiration time.Duration) *redis.StatusCmd {
+				called = true
+				if key == TestKey && value == TestValue && expiration == 10*time.Second {
+					cmd := redis.NewStatusCmd(ctx, "set", key)
+					cmd.SetVal("OK")
+					return cmd
+				}
+				return redis.NewStatusCmd(ctx, "set", key)
+			}
+
+			err := client.SetValue(ctx, TestKey, TestValue, 10*time.Second)
+
+			Convey("Then it should not return an error", func() {
+				So(err, ShouldBeNil)
+			})
+
+			Convey("Then all expected Redis commands should have been called", func() {
+				So(called, ShouldBeTrue)
+			})
+		})
+	})
+
+	Convey("Given a mocked Redis client without expiration", t, func() {
+		Convey("When setting a key-value pair without expiration", func() {
+			mockRedisClient.SetFunc = func(ctx context.Context, key string, value interface{}, expiration time.Duration) *redis.StatusCmd {
+				called = true
+				if key == TestKey && value == TestValue && expiration == 0 {
+					cmd := redis.NewStatusCmd(ctx, "set", key)
+					cmd.SetVal("OK")
+					return cmd
+				}
+				return redis.NewStatusCmd(ctx, "set", key)
+			}
+
+			err := client.SetValue(ctx, TestKey, TestValue, 0)
+
+			Convey("Then it should not return an error", func() {
+				So(err, ShouldBeNil)
+			})
+
+			Convey("Then all expected Redis commands should have been called", func() {
+				So(called, ShouldBeTrue)
 			})
 		})
 	})
