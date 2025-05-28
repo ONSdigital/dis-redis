@@ -51,6 +51,46 @@ func (cli *Client) GetValue(ctx context.Context, key string) (string, error) {
 	return val, nil
 }
 
+// GetKeyValuePairs retrieves a set of key-value pairs from Redis based on a match pattern
+func (cli *Client) GetKeyValuePairs(ctx context.Context, matchPattern string, count int64) (map[string]string, error) {
+	keyValuePairs := make(map[string]string)
+	cursor := uint64(0)
+
+	// Scan through the keys in Redis
+	for {
+		// Get the list of keys matching the pattern
+		keys, newCursor, err := cli.redisClient.Scan(ctx, cursor, matchPattern, count).Result()
+		if err != nil {
+			return nil, fmt.Errorf("error scanning keys: %w", err)
+		}
+
+		// If we have keys, get the values for those keys
+		if len(keys) > 0 {
+			values, err := cli.redisClient.MGet(ctx, keys...).Result()
+			if err != nil {
+				return nil, fmt.Errorf("error fetching values for keys: %w", err)
+			}
+
+			// Add the key-value pairs to the map
+			for i, key := range keys {
+				if i < len(values) {
+					if val, ok := values[i].(string); ok {
+						keyValuePairs[key] = val
+					}
+				}
+			}
+		}
+
+		// If the cursor is 0, we've scanned all keys
+		if newCursor == 0 {
+			break
+		}
+		cursor = newCursor
+	}
+
+	return keyValuePairs, nil
+}
+
 // GetTotalKeys returns the total number of keys in the Redis database.
 func (cli *Client) GetTotalKeys(ctx context.Context) (int64, error) {
 	count, err := cli.redisClient.DBSize(ctx).Result()

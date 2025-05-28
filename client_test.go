@@ -116,6 +116,97 @@ func TestClient_GetValue(t *testing.T) {
 	})
 }
 
+func Test_GetKeyValuePairs(t *testing.T) {
+	ctx := context.Background()
+
+	mockRedisClient := &mocks.GoRedisClientMock{}
+
+	// Simulating the cmdable function type
+	mockCmdable := func(ctx context.Context, cmd redis.Cmder) error {
+		switch c := cmd.(type) {
+		case *redis.ScanCmd:
+			c.SetVal([]string{"key1", "key2"}, 0)
+		case *redis.SliceCmd:
+			// Simulate the behavior of MGetCmd
+			c.SetVal([]interface{}{"value1", "value2"})
+		}
+		return nil
+	}
+
+	client := &Client{
+		redisClient: mockRedisClient,
+	}
+
+	// Test case: Successfully retrieve key-value pairs
+	Convey("Given a mocked Redis client", t, func() {
+		Convey("When retrieving key-value pairs", func() {
+			// Set the mock behavior for Scan and MGet
+			mockRedisClient.ScanFunc = func(ctx context.Context, cursor uint64, match string, count int64) *redis.ScanCmd {
+				// Mock ScanCmd using available functions without accessing baseCmd
+				cmd := redis.NewScanCmd(ctx, mockCmdable, cursor, match, count) // No need to access baseCmd directly
+				cmd.SetVal([]string{"key1", "key2"}, cursor)
+				return cmd
+			}
+
+			// Mock MGet with the correct conversion of []string to []interface{}
+			mockRedisClient.MGetFunc = func(ctx context.Context, keys ...string) *redis.SliceCmd {
+				interfaceKeys := make([]interface{}, len(keys))
+				for i, key := range keys {
+					interfaceKeys[i] = key
+				}
+
+				cmd := redis.NewSliceCmd(ctx, interfaceKeys...)
+				cmd.SetVal([]interface{}{"value1", "value2"})
+				return cmd
+			}
+
+			keyValuePairs, err := client.GetKeyValuePairs(ctx, "prefix:*", 10)
+
+			Convey("Then it should return the correct key-value pairs", func() {
+				So(err, ShouldBeNil)
+				So(keyValuePairs, ShouldResemble, map[string]string{
+					"key1": "value1",
+					"key2": "value2",
+				})
+			})
+
+			Convey("Then it should return an empty map when no keys match", func() {
+				mockRedisClient.ScanFunc = func(ctx context.Context, cursor uint64, match string, count int64) *redis.ScanCmd {
+					cmd := redis.NewScanCmd(ctx, mockCmdable, match, count)
+					cmd.SetVal([]string{}, 0) // Return no keys
+					return cmd
+				}
+				keyValuePairs, err := client.GetKeyValuePairs(ctx, "prefix:*", 10)
+				So(err, ShouldBeNil)
+				So(keyValuePairs, ShouldResemble, map[string]string{}) // No keys found
+			})
+
+			Convey("Then it should handle cursor pagination correctly", func() {
+				// Mock multiple cursors for pagination
+				mockRedisClient.ScanFunc = func(ctx context.Context, cursor uint64, match string, count int64) *redis.ScanCmd {
+					if cursor == 0 {
+						cmd := redis.NewScanCmd(ctx, mockCmdable, match, count)
+						cmd.SetVal([]string{"key1", "key2"}, 123) // Simulate first page with cursor 123
+						return cmd
+					}
+					cmd := redis.NewScanCmd(ctx, mockCmdable, match, count)
+					cmd.SetVal([]string{"key3", "key4"}, 0) // Simulate second page with cursor 0 (end)
+					return cmd
+				}
+
+				keyValuePairs, err := client.GetKeyValuePairs(ctx, "prefix:*", 10)
+				So(err, ShouldBeNil)
+				So(keyValuePairs, ShouldResemble, map[string]string{
+					"key1": "value1",
+					"key2": "value2",
+					"key3": "value1",
+					"key4": "value2",
+				})
+			})
+		})
+	})
+}
+
 func TestClient_GetTotalKeys(t *testing.T) {
 	mockRedisClient := &mocks.GoRedisClientMock{}
 	client := &Client{
