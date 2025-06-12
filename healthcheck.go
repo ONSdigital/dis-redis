@@ -19,7 +19,7 @@ func (cli *Client) Checker(ctx context.Context, state *health.CheckState) error 
 		state = &health.CheckState{}
 	}
 
-	statusCode, err := cli.healthcheck(ctx)
+	statusCode, err := cli.Ping(ctx)
 	if err != nil {
 		if updateErr := state.Update(health.StatusCritical, err.Error(), statusCode); updateErr != nil {
 			return updateErr
@@ -35,9 +35,9 @@ func (cli *Client) Checker(ctx context.Context, state *health.CheckState) error 
 	return nil
 }
 
-// healthcheck calls redis to check its health status. This call implements only the logic,
-// without providing the Check object, and it's aimed for internal use.
-func (cli *Client) healthcheck(ctx context.Context) (code int, err error) {
+// Ping calls redis to check its health status. This call implements only the logic,
+// without providing the Check object, and it's aimed for both internal and external use.
+func (cli *Client) Ping(ctx context.Context) (code int, err error) {
 	err = cli.redisClient.Ping(ctx).Err()
 	if err != nil {
 		return 500, ErrorFailedConnection
