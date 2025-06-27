@@ -1323,6 +1323,60 @@ var _ interfaces.GoRedisClient = &GoRedisClientMock{}
 //			UnlinkFunc: func(ctx context.Context, keys ...string) *redis.IntCmd {
 //				panic("mock out the Unlink method")
 //			},
+//			VAddFunc: func(ctx context.Context, key string, element string, val redis.Vector) *redis.BoolCmd {
+//				panic("mock out the VAdd method")
+//			},
+//			VAddWithArgsFunc: func(ctx context.Context, key string, element string, val redis.Vector, addArgs *redis.VAddArgs) *redis.BoolCmd {
+//				panic("mock out the VAddWithArgs method")
+//			},
+//			VCardFunc: func(ctx context.Context, key string) *redis.IntCmd {
+//				panic("mock out the VCard method")
+//			},
+//			VClearAttributesFunc: func(ctx context.Context, key string, element string) *redis.BoolCmd {
+//				panic("mock out the VClearAttributes method")
+//			},
+//			VDimFunc: func(ctx context.Context, key string) *redis.IntCmd {
+//				panic("mock out the VDim method")
+//			},
+//			VEmbFunc: func(ctx context.Context, key string, element string, raw bool) *redis.SliceCmd {
+//				panic("mock out the VEmb method")
+//			},
+//			VGetAttrFunc: func(ctx context.Context, key string, element string) *redis.StringCmd {
+//				panic("mock out the VGetAttr method")
+//			},
+//			VInfoFunc: func(ctx context.Context, key string) *redis.MapStringInterfaceCmd {
+//				panic("mock out the VInfo method")
+//			},
+//			VLinksFunc: func(ctx context.Context, key string, element string) *redis.StringSliceCmd {
+//				panic("mock out the VLinks method")
+//			},
+//			VLinksWithScoresFunc: func(ctx context.Context, key string, element string) *redis.VectorScoreSliceCmd {
+//				panic("mock out the VLinksWithScores method")
+//			},
+//			VRandMemberFunc: func(ctx context.Context, key string) *redis.StringCmd {
+//				panic("mock out the VRandMember method")
+//			},
+//			VRandMemberCountFunc: func(ctx context.Context, key string, count int) *redis.StringSliceCmd {
+//				panic("mock out the VRandMemberCount method")
+//			},
+//			VRemFunc: func(ctx context.Context, key string, element string) *redis.BoolCmd {
+//				panic("mock out the VRem method")
+//			},
+//			VSetAttrFunc: func(ctx context.Context, key string, element string, attr interface{}) *redis.BoolCmd {
+//				panic("mock out the VSetAttr method")
+//			},
+//			VSimFunc: func(ctx context.Context, key string, val redis.Vector) *redis.StringSliceCmd {
+//				panic("mock out the VSim method")
+//			},
+//			VSimWithArgsFunc: func(ctx context.Context, key string, val redis.Vector, args *redis.VSimArgs) *redis.StringSliceCmd {
+//				panic("mock out the VSimWithArgs method")
+//			},
+//			VSimWithArgsWithScoresFunc: func(ctx context.Context, key string, val redis.Vector, args *redis.VSimArgs) *redis.VectorScoreSliceCmd {
+//				panic("mock out the VSimWithArgsWithScores method")
+//			},
+//			VSimWithScoresFunc: func(ctx context.Context, key string, val redis.Vector) *redis.VectorScoreSliceCmd {
+//				panic("mock out the VSimWithScores method")
+//			},
 //			WatchFunc: func(ctx context.Context, fn func(*redis.Tx) error, keys ...string) error {
 //				panic("mock out the Watch method")
 //			},
@@ -2877,6 +2931,60 @@ type GoRedisClientMock struct {
 
 	// UnlinkFunc mocks the Unlink method.
 	UnlinkFunc func(ctx context.Context, keys ...string) *redis.IntCmd
+
+	// VAddFunc mocks the VAdd method.
+	VAddFunc func(ctx context.Context, key string, element string, val redis.Vector) *redis.BoolCmd
+
+	// VAddWithArgsFunc mocks the VAddWithArgs method.
+	VAddWithArgsFunc func(ctx context.Context, key string, element string, val redis.Vector, addArgs *redis.VAddArgs) *redis.BoolCmd
+
+	// VCardFunc mocks the VCard method.
+	VCardFunc func(ctx context.Context, key string) *redis.IntCmd
+
+	// VClearAttributesFunc mocks the VClearAttributes method.
+	VClearAttributesFunc func(ctx context.Context, key string, element string) *redis.BoolCmd
+
+	// VDimFunc mocks the VDim method.
+	VDimFunc func(ctx context.Context, key string) *redis.IntCmd
+
+	// VEmbFunc mocks the VEmb method.
+	VEmbFunc func(ctx context.Context, key string, element string, raw bool) *redis.SliceCmd
+
+	// VGetAttrFunc mocks the VGetAttr method.
+	VGetAttrFunc func(ctx context.Context, key string, element string) *redis.StringCmd
+
+	// VInfoFunc mocks the VInfo method.
+	VInfoFunc func(ctx context.Context, key string) *redis.MapStringInterfaceCmd
+
+	// VLinksFunc mocks the VLinks method.
+	VLinksFunc func(ctx context.Context, key string, element string) *redis.StringSliceCmd
+
+	// VLinksWithScoresFunc mocks the VLinksWithScores method.
+	VLinksWithScoresFunc func(ctx context.Context, key string, element string) *redis.VectorScoreSliceCmd
+
+	// VRandMemberFunc mocks the VRandMember method.
+	VRandMemberFunc func(ctx context.Context, key string) *redis.StringCmd
+
+	// VRandMemberCountFunc mocks the VRandMemberCount method.
+	VRandMemberCountFunc func(ctx context.Context, key string, count int) *redis.StringSliceCmd
+
+	// VRemFunc mocks the VRem method.
+	VRemFunc func(ctx context.Context, key string, element string) *redis.BoolCmd
+
+	// VSetAttrFunc mocks the VSetAttr method.
+	VSetAttrFunc func(ctx context.Context, key string, element string, attr interface{}) *redis.BoolCmd
+
+	// VSimFunc mocks the VSim method.
+	VSimFunc func(ctx context.Context, key string, val redis.Vector) *redis.StringSliceCmd
+
+	// VSimWithArgsFunc mocks the VSimWithArgs method.
+	VSimWithArgsFunc func(ctx context.Context, key string, val redis.Vector, args *redis.VSimArgs) *redis.StringSliceCmd
+
+	// VSimWithArgsWithScoresFunc mocks the VSimWithArgsWithScores method.
+	VSimWithArgsWithScoresFunc func(ctx context.Context, key string, val redis.Vector, args *redis.VSimArgs) *redis.VectorScoreSliceCmd
+
+	// VSimWithScoresFunc mocks the VSimWithScores method.
+	VSimWithScoresFunc func(ctx context.Context, key string, val redis.Vector) *redis.VectorScoreSliceCmd
 
 	// WatchFunc mocks the Watch method.
 	WatchFunc func(ctx context.Context, fn func(*redis.Tx) error, keys ...string) error
@@ -6882,6 +6990,174 @@ type GoRedisClientMock struct {
 			// Keys is the keys argument value.
 			Keys []string
 		}
+		// VAdd holds details about calls to the VAdd method.
+		VAdd []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// Element is the element argument value.
+			Element string
+			// Val is the val argument value.
+			Val redis.Vector
+		}
+		// VAddWithArgs holds details about calls to the VAddWithArgs method.
+		VAddWithArgs []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// Element is the element argument value.
+			Element string
+			// Val is the val argument value.
+			Val redis.Vector
+			// AddArgs is the addArgs argument value.
+			AddArgs *redis.VAddArgs
+		}
+		// VCard holds details about calls to the VCard method.
+		VCard []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+		}
+		// VClearAttributes holds details about calls to the VClearAttributes method.
+		VClearAttributes []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// Element is the element argument value.
+			Element string
+		}
+		// VDim holds details about calls to the VDim method.
+		VDim []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+		}
+		// VEmb holds details about calls to the VEmb method.
+		VEmb []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// Element is the element argument value.
+			Element string
+			// Raw is the raw argument value.
+			Raw bool
+		}
+		// VGetAttr holds details about calls to the VGetAttr method.
+		VGetAttr []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// Element is the element argument value.
+			Element string
+		}
+		// VInfo holds details about calls to the VInfo method.
+		VInfo []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+		}
+		// VLinks holds details about calls to the VLinks method.
+		VLinks []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// Element is the element argument value.
+			Element string
+		}
+		// VLinksWithScores holds details about calls to the VLinksWithScores method.
+		VLinksWithScores []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// Element is the element argument value.
+			Element string
+		}
+		// VRandMember holds details about calls to the VRandMember method.
+		VRandMember []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+		}
+		// VRandMemberCount holds details about calls to the VRandMemberCount method.
+		VRandMemberCount []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// Count is the count argument value.
+			Count int
+		}
+		// VRem holds details about calls to the VRem method.
+		VRem []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// Element is the element argument value.
+			Element string
+		}
+		// VSetAttr holds details about calls to the VSetAttr method.
+		VSetAttr []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// Element is the element argument value.
+			Element string
+			// Attr is the attr argument value.
+			Attr interface{}
+		}
+		// VSim holds details about calls to the VSim method.
+		VSim []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// Val is the val argument value.
+			Val redis.Vector
+		}
+		// VSimWithArgs holds details about calls to the VSimWithArgs method.
+		VSimWithArgs []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// Val is the val argument value.
+			Val redis.Vector
+			// Args is the args argument value.
+			Args *redis.VSimArgs
+		}
+		// VSimWithArgsWithScores holds details about calls to the VSimWithArgsWithScores method.
+		VSimWithArgsWithScores []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// Val is the val argument value.
+			Val redis.Vector
+			// Args is the args argument value.
+			Args *redis.VSimArgs
+		}
+		// VSimWithScores holds details about calls to the VSimWithScores method.
+		VSimWithScores []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// Val is the val argument value.
+			Val redis.Vector
+		}
 		// Watch holds details about calls to the Watch method.
 		Watch []struct {
 			// Ctx is the ctx argument value.
@@ -8067,6 +8343,24 @@ type GoRedisClientMock struct {
 	lockTxPipelined                  sync.RWMutex
 	lockType                         sync.RWMutex
 	lockUnlink                       sync.RWMutex
+	lockVAdd                         sync.RWMutex
+	lockVAddWithArgs                 sync.RWMutex
+	lockVCard                        sync.RWMutex
+	lockVClearAttributes             sync.RWMutex
+	lockVDim                         sync.RWMutex
+	lockVEmb                         sync.RWMutex
+	lockVGetAttr                     sync.RWMutex
+	lockVInfo                        sync.RWMutex
+	lockVLinks                       sync.RWMutex
+	lockVLinksWithScores             sync.RWMutex
+	lockVRandMember                  sync.RWMutex
+	lockVRandMemberCount             sync.RWMutex
+	lockVRem                         sync.RWMutex
+	lockVSetAttr                     sync.RWMutex
+	lockVSim                         sync.RWMutex
+	lockVSimWithArgs                 sync.RWMutex
+	lockVSimWithArgsWithScores       sync.RWMutex
+	lockVSimWithScores               sync.RWMutex
 	lockWatch                        sync.RWMutex
 	lockXAck                         sync.RWMutex
 	lockXAdd                         sync.RWMutex
@@ -25204,6 +25498,738 @@ func (mock *GoRedisClientMock) UnlinkCalls() []struct {
 	mock.lockUnlink.RLock()
 	calls = mock.calls.Unlink
 	mock.lockUnlink.RUnlock()
+	return calls
+}
+
+// VAdd calls VAddFunc.
+func (mock *GoRedisClientMock) VAdd(ctx context.Context, key string, element string, val redis.Vector) *redis.BoolCmd {
+	if mock.VAddFunc == nil {
+		panic("GoRedisClientMock.VAddFunc: method is nil but GoRedisClient.VAdd was just called")
+	}
+	callInfo := struct {
+		Ctx     context.Context
+		Key     string
+		Element string
+		Val     redis.Vector
+	}{
+		Ctx:     ctx,
+		Key:     key,
+		Element: element,
+		Val:     val,
+	}
+	mock.lockVAdd.Lock()
+	mock.calls.VAdd = append(mock.calls.VAdd, callInfo)
+	mock.lockVAdd.Unlock()
+	return mock.VAddFunc(ctx, key, element, val)
+}
+
+// VAddCalls gets all the calls that were made to VAdd.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.VAddCalls())
+func (mock *GoRedisClientMock) VAddCalls() []struct {
+	Ctx     context.Context
+	Key     string
+	Element string
+	Val     redis.Vector
+} {
+	var calls []struct {
+		Ctx     context.Context
+		Key     string
+		Element string
+		Val     redis.Vector
+	}
+	mock.lockVAdd.RLock()
+	calls = mock.calls.VAdd
+	mock.lockVAdd.RUnlock()
+	return calls
+}
+
+// VAddWithArgs calls VAddWithArgsFunc.
+func (mock *GoRedisClientMock) VAddWithArgs(ctx context.Context, key string, element string, val redis.Vector, addArgs *redis.VAddArgs) *redis.BoolCmd {
+	if mock.VAddWithArgsFunc == nil {
+		panic("GoRedisClientMock.VAddWithArgsFunc: method is nil but GoRedisClient.VAddWithArgs was just called")
+	}
+	callInfo := struct {
+		Ctx     context.Context
+		Key     string
+		Element string
+		Val     redis.Vector
+		AddArgs *redis.VAddArgs
+	}{
+		Ctx:     ctx,
+		Key:     key,
+		Element: element,
+		Val:     val,
+		AddArgs: addArgs,
+	}
+	mock.lockVAddWithArgs.Lock()
+	mock.calls.VAddWithArgs = append(mock.calls.VAddWithArgs, callInfo)
+	mock.lockVAddWithArgs.Unlock()
+	return mock.VAddWithArgsFunc(ctx, key, element, val, addArgs)
+}
+
+// VAddWithArgsCalls gets all the calls that were made to VAddWithArgs.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.VAddWithArgsCalls())
+func (mock *GoRedisClientMock) VAddWithArgsCalls() []struct {
+	Ctx     context.Context
+	Key     string
+	Element string
+	Val     redis.Vector
+	AddArgs *redis.VAddArgs
+} {
+	var calls []struct {
+		Ctx     context.Context
+		Key     string
+		Element string
+		Val     redis.Vector
+		AddArgs *redis.VAddArgs
+	}
+	mock.lockVAddWithArgs.RLock()
+	calls = mock.calls.VAddWithArgs
+	mock.lockVAddWithArgs.RUnlock()
+	return calls
+}
+
+// VCard calls VCardFunc.
+func (mock *GoRedisClientMock) VCard(ctx context.Context, key string) *redis.IntCmd {
+	if mock.VCardFunc == nil {
+		panic("GoRedisClientMock.VCardFunc: method is nil but GoRedisClient.VCard was just called")
+	}
+	callInfo := struct {
+		Ctx context.Context
+		Key string
+	}{
+		Ctx: ctx,
+		Key: key,
+	}
+	mock.lockVCard.Lock()
+	mock.calls.VCard = append(mock.calls.VCard, callInfo)
+	mock.lockVCard.Unlock()
+	return mock.VCardFunc(ctx, key)
+}
+
+// VCardCalls gets all the calls that were made to VCard.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.VCardCalls())
+func (mock *GoRedisClientMock) VCardCalls() []struct {
+	Ctx context.Context
+	Key string
+} {
+	var calls []struct {
+		Ctx context.Context
+		Key string
+	}
+	mock.lockVCard.RLock()
+	calls = mock.calls.VCard
+	mock.lockVCard.RUnlock()
+	return calls
+}
+
+// VClearAttributes calls VClearAttributesFunc.
+func (mock *GoRedisClientMock) VClearAttributes(ctx context.Context, key string, element string) *redis.BoolCmd {
+	if mock.VClearAttributesFunc == nil {
+		panic("GoRedisClientMock.VClearAttributesFunc: method is nil but GoRedisClient.VClearAttributes was just called")
+	}
+	callInfo := struct {
+		Ctx     context.Context
+		Key     string
+		Element string
+	}{
+		Ctx:     ctx,
+		Key:     key,
+		Element: element,
+	}
+	mock.lockVClearAttributes.Lock()
+	mock.calls.VClearAttributes = append(mock.calls.VClearAttributes, callInfo)
+	mock.lockVClearAttributes.Unlock()
+	return mock.VClearAttributesFunc(ctx, key, element)
+}
+
+// VClearAttributesCalls gets all the calls that were made to VClearAttributes.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.VClearAttributesCalls())
+func (mock *GoRedisClientMock) VClearAttributesCalls() []struct {
+	Ctx     context.Context
+	Key     string
+	Element string
+} {
+	var calls []struct {
+		Ctx     context.Context
+		Key     string
+		Element string
+	}
+	mock.lockVClearAttributes.RLock()
+	calls = mock.calls.VClearAttributes
+	mock.lockVClearAttributes.RUnlock()
+	return calls
+}
+
+// VDim calls VDimFunc.
+func (mock *GoRedisClientMock) VDim(ctx context.Context, key string) *redis.IntCmd {
+	if mock.VDimFunc == nil {
+		panic("GoRedisClientMock.VDimFunc: method is nil but GoRedisClient.VDim was just called")
+	}
+	callInfo := struct {
+		Ctx context.Context
+		Key string
+	}{
+		Ctx: ctx,
+		Key: key,
+	}
+	mock.lockVDim.Lock()
+	mock.calls.VDim = append(mock.calls.VDim, callInfo)
+	mock.lockVDim.Unlock()
+	return mock.VDimFunc(ctx, key)
+}
+
+// VDimCalls gets all the calls that were made to VDim.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.VDimCalls())
+func (mock *GoRedisClientMock) VDimCalls() []struct {
+	Ctx context.Context
+	Key string
+} {
+	var calls []struct {
+		Ctx context.Context
+		Key string
+	}
+	mock.lockVDim.RLock()
+	calls = mock.calls.VDim
+	mock.lockVDim.RUnlock()
+	return calls
+}
+
+// VEmb calls VEmbFunc.
+func (mock *GoRedisClientMock) VEmb(ctx context.Context, key string, element string, raw bool) *redis.SliceCmd {
+	if mock.VEmbFunc == nil {
+		panic("GoRedisClientMock.VEmbFunc: method is nil but GoRedisClient.VEmb was just called")
+	}
+	callInfo := struct {
+		Ctx     context.Context
+		Key     string
+		Element string
+		Raw     bool
+	}{
+		Ctx:     ctx,
+		Key:     key,
+		Element: element,
+		Raw:     raw,
+	}
+	mock.lockVEmb.Lock()
+	mock.calls.VEmb = append(mock.calls.VEmb, callInfo)
+	mock.lockVEmb.Unlock()
+	return mock.VEmbFunc(ctx, key, element, raw)
+}
+
+// VEmbCalls gets all the calls that were made to VEmb.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.VEmbCalls())
+func (mock *GoRedisClientMock) VEmbCalls() []struct {
+	Ctx     context.Context
+	Key     string
+	Element string
+	Raw     bool
+} {
+	var calls []struct {
+		Ctx     context.Context
+		Key     string
+		Element string
+		Raw     bool
+	}
+	mock.lockVEmb.RLock()
+	calls = mock.calls.VEmb
+	mock.lockVEmb.RUnlock()
+	return calls
+}
+
+// VGetAttr calls VGetAttrFunc.
+func (mock *GoRedisClientMock) VGetAttr(ctx context.Context, key string, element string) *redis.StringCmd {
+	if mock.VGetAttrFunc == nil {
+		panic("GoRedisClientMock.VGetAttrFunc: method is nil but GoRedisClient.VGetAttr was just called")
+	}
+	callInfo := struct {
+		Ctx     context.Context
+		Key     string
+		Element string
+	}{
+		Ctx:     ctx,
+		Key:     key,
+		Element: element,
+	}
+	mock.lockVGetAttr.Lock()
+	mock.calls.VGetAttr = append(mock.calls.VGetAttr, callInfo)
+	mock.lockVGetAttr.Unlock()
+	return mock.VGetAttrFunc(ctx, key, element)
+}
+
+// VGetAttrCalls gets all the calls that were made to VGetAttr.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.VGetAttrCalls())
+func (mock *GoRedisClientMock) VGetAttrCalls() []struct {
+	Ctx     context.Context
+	Key     string
+	Element string
+} {
+	var calls []struct {
+		Ctx     context.Context
+		Key     string
+		Element string
+	}
+	mock.lockVGetAttr.RLock()
+	calls = mock.calls.VGetAttr
+	mock.lockVGetAttr.RUnlock()
+	return calls
+}
+
+// VInfo calls VInfoFunc.
+func (mock *GoRedisClientMock) VInfo(ctx context.Context, key string) *redis.MapStringInterfaceCmd {
+	if mock.VInfoFunc == nil {
+		panic("GoRedisClientMock.VInfoFunc: method is nil but GoRedisClient.VInfo was just called")
+	}
+	callInfo := struct {
+		Ctx context.Context
+		Key string
+	}{
+		Ctx: ctx,
+		Key: key,
+	}
+	mock.lockVInfo.Lock()
+	mock.calls.VInfo = append(mock.calls.VInfo, callInfo)
+	mock.lockVInfo.Unlock()
+	return mock.VInfoFunc(ctx, key)
+}
+
+// VInfoCalls gets all the calls that were made to VInfo.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.VInfoCalls())
+func (mock *GoRedisClientMock) VInfoCalls() []struct {
+	Ctx context.Context
+	Key string
+} {
+	var calls []struct {
+		Ctx context.Context
+		Key string
+	}
+	mock.lockVInfo.RLock()
+	calls = mock.calls.VInfo
+	mock.lockVInfo.RUnlock()
+	return calls
+}
+
+// VLinks calls VLinksFunc.
+func (mock *GoRedisClientMock) VLinks(ctx context.Context, key string, element string) *redis.StringSliceCmd {
+	if mock.VLinksFunc == nil {
+		panic("GoRedisClientMock.VLinksFunc: method is nil but GoRedisClient.VLinks was just called")
+	}
+	callInfo := struct {
+		Ctx     context.Context
+		Key     string
+		Element string
+	}{
+		Ctx:     ctx,
+		Key:     key,
+		Element: element,
+	}
+	mock.lockVLinks.Lock()
+	mock.calls.VLinks = append(mock.calls.VLinks, callInfo)
+	mock.lockVLinks.Unlock()
+	return mock.VLinksFunc(ctx, key, element)
+}
+
+// VLinksCalls gets all the calls that were made to VLinks.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.VLinksCalls())
+func (mock *GoRedisClientMock) VLinksCalls() []struct {
+	Ctx     context.Context
+	Key     string
+	Element string
+} {
+	var calls []struct {
+		Ctx     context.Context
+		Key     string
+		Element string
+	}
+	mock.lockVLinks.RLock()
+	calls = mock.calls.VLinks
+	mock.lockVLinks.RUnlock()
+	return calls
+}
+
+// VLinksWithScores calls VLinksWithScoresFunc.
+func (mock *GoRedisClientMock) VLinksWithScores(ctx context.Context, key string, element string) *redis.VectorScoreSliceCmd {
+	if mock.VLinksWithScoresFunc == nil {
+		panic("GoRedisClientMock.VLinksWithScoresFunc: method is nil but GoRedisClient.VLinksWithScores was just called")
+	}
+	callInfo := struct {
+		Ctx     context.Context
+		Key     string
+		Element string
+	}{
+		Ctx:     ctx,
+		Key:     key,
+		Element: element,
+	}
+	mock.lockVLinksWithScores.Lock()
+	mock.calls.VLinksWithScores = append(mock.calls.VLinksWithScores, callInfo)
+	mock.lockVLinksWithScores.Unlock()
+	return mock.VLinksWithScoresFunc(ctx, key, element)
+}
+
+// VLinksWithScoresCalls gets all the calls that were made to VLinksWithScores.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.VLinksWithScoresCalls())
+func (mock *GoRedisClientMock) VLinksWithScoresCalls() []struct {
+	Ctx     context.Context
+	Key     string
+	Element string
+} {
+	var calls []struct {
+		Ctx     context.Context
+		Key     string
+		Element string
+	}
+	mock.lockVLinksWithScores.RLock()
+	calls = mock.calls.VLinksWithScores
+	mock.lockVLinksWithScores.RUnlock()
+	return calls
+}
+
+// VRandMember calls VRandMemberFunc.
+func (mock *GoRedisClientMock) VRandMember(ctx context.Context, key string) *redis.StringCmd {
+	if mock.VRandMemberFunc == nil {
+		panic("GoRedisClientMock.VRandMemberFunc: method is nil but GoRedisClient.VRandMember was just called")
+	}
+	callInfo := struct {
+		Ctx context.Context
+		Key string
+	}{
+		Ctx: ctx,
+		Key: key,
+	}
+	mock.lockVRandMember.Lock()
+	mock.calls.VRandMember = append(mock.calls.VRandMember, callInfo)
+	mock.lockVRandMember.Unlock()
+	return mock.VRandMemberFunc(ctx, key)
+}
+
+// VRandMemberCalls gets all the calls that were made to VRandMember.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.VRandMemberCalls())
+func (mock *GoRedisClientMock) VRandMemberCalls() []struct {
+	Ctx context.Context
+	Key string
+} {
+	var calls []struct {
+		Ctx context.Context
+		Key string
+	}
+	mock.lockVRandMember.RLock()
+	calls = mock.calls.VRandMember
+	mock.lockVRandMember.RUnlock()
+	return calls
+}
+
+// VRandMemberCount calls VRandMemberCountFunc.
+func (mock *GoRedisClientMock) VRandMemberCount(ctx context.Context, key string, count int) *redis.StringSliceCmd {
+	if mock.VRandMemberCountFunc == nil {
+		panic("GoRedisClientMock.VRandMemberCountFunc: method is nil but GoRedisClient.VRandMemberCount was just called")
+	}
+	callInfo := struct {
+		Ctx   context.Context
+		Key   string
+		Count int
+	}{
+		Ctx:   ctx,
+		Key:   key,
+		Count: count,
+	}
+	mock.lockVRandMemberCount.Lock()
+	mock.calls.VRandMemberCount = append(mock.calls.VRandMemberCount, callInfo)
+	mock.lockVRandMemberCount.Unlock()
+	return mock.VRandMemberCountFunc(ctx, key, count)
+}
+
+// VRandMemberCountCalls gets all the calls that were made to VRandMemberCount.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.VRandMemberCountCalls())
+func (mock *GoRedisClientMock) VRandMemberCountCalls() []struct {
+	Ctx   context.Context
+	Key   string
+	Count int
+} {
+	var calls []struct {
+		Ctx   context.Context
+		Key   string
+		Count int
+	}
+	mock.lockVRandMemberCount.RLock()
+	calls = mock.calls.VRandMemberCount
+	mock.lockVRandMemberCount.RUnlock()
+	return calls
+}
+
+// VRem calls VRemFunc.
+func (mock *GoRedisClientMock) VRem(ctx context.Context, key string, element string) *redis.BoolCmd {
+	if mock.VRemFunc == nil {
+		panic("GoRedisClientMock.VRemFunc: method is nil but GoRedisClient.VRem was just called")
+	}
+	callInfo := struct {
+		Ctx     context.Context
+		Key     string
+		Element string
+	}{
+		Ctx:     ctx,
+		Key:     key,
+		Element: element,
+	}
+	mock.lockVRem.Lock()
+	mock.calls.VRem = append(mock.calls.VRem, callInfo)
+	mock.lockVRem.Unlock()
+	return mock.VRemFunc(ctx, key, element)
+}
+
+// VRemCalls gets all the calls that were made to VRem.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.VRemCalls())
+func (mock *GoRedisClientMock) VRemCalls() []struct {
+	Ctx     context.Context
+	Key     string
+	Element string
+} {
+	var calls []struct {
+		Ctx     context.Context
+		Key     string
+		Element string
+	}
+	mock.lockVRem.RLock()
+	calls = mock.calls.VRem
+	mock.lockVRem.RUnlock()
+	return calls
+}
+
+// VSetAttr calls VSetAttrFunc.
+func (mock *GoRedisClientMock) VSetAttr(ctx context.Context, key string, element string, attr interface{}) *redis.BoolCmd {
+	if mock.VSetAttrFunc == nil {
+		panic("GoRedisClientMock.VSetAttrFunc: method is nil but GoRedisClient.VSetAttr was just called")
+	}
+	callInfo := struct {
+		Ctx     context.Context
+		Key     string
+		Element string
+		Attr    interface{}
+	}{
+		Ctx:     ctx,
+		Key:     key,
+		Element: element,
+		Attr:    attr,
+	}
+	mock.lockVSetAttr.Lock()
+	mock.calls.VSetAttr = append(mock.calls.VSetAttr, callInfo)
+	mock.lockVSetAttr.Unlock()
+	return mock.VSetAttrFunc(ctx, key, element, attr)
+}
+
+// VSetAttrCalls gets all the calls that were made to VSetAttr.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.VSetAttrCalls())
+func (mock *GoRedisClientMock) VSetAttrCalls() []struct {
+	Ctx     context.Context
+	Key     string
+	Element string
+	Attr    interface{}
+} {
+	var calls []struct {
+		Ctx     context.Context
+		Key     string
+		Element string
+		Attr    interface{}
+	}
+	mock.lockVSetAttr.RLock()
+	calls = mock.calls.VSetAttr
+	mock.lockVSetAttr.RUnlock()
+	return calls
+}
+
+// VSim calls VSimFunc.
+func (mock *GoRedisClientMock) VSim(ctx context.Context, key string, val redis.Vector) *redis.StringSliceCmd {
+	if mock.VSimFunc == nil {
+		panic("GoRedisClientMock.VSimFunc: method is nil but GoRedisClient.VSim was just called")
+	}
+	callInfo := struct {
+		Ctx context.Context
+		Key string
+		Val redis.Vector
+	}{
+		Ctx: ctx,
+		Key: key,
+		Val: val,
+	}
+	mock.lockVSim.Lock()
+	mock.calls.VSim = append(mock.calls.VSim, callInfo)
+	mock.lockVSim.Unlock()
+	return mock.VSimFunc(ctx, key, val)
+}
+
+// VSimCalls gets all the calls that were made to VSim.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.VSimCalls())
+func (mock *GoRedisClientMock) VSimCalls() []struct {
+	Ctx context.Context
+	Key string
+	Val redis.Vector
+} {
+	var calls []struct {
+		Ctx context.Context
+		Key string
+		Val redis.Vector
+	}
+	mock.lockVSim.RLock()
+	calls = mock.calls.VSim
+	mock.lockVSim.RUnlock()
+	return calls
+}
+
+// VSimWithArgs calls VSimWithArgsFunc.
+func (mock *GoRedisClientMock) VSimWithArgs(ctx context.Context, key string, val redis.Vector, args *redis.VSimArgs) *redis.StringSliceCmd {
+	if mock.VSimWithArgsFunc == nil {
+		panic("GoRedisClientMock.VSimWithArgsFunc: method is nil but GoRedisClient.VSimWithArgs was just called")
+	}
+	callInfo := struct {
+		Ctx  context.Context
+		Key  string
+		Val  redis.Vector
+		Args *redis.VSimArgs
+	}{
+		Ctx:  ctx,
+		Key:  key,
+		Val:  val,
+		Args: args,
+	}
+	mock.lockVSimWithArgs.Lock()
+	mock.calls.VSimWithArgs = append(mock.calls.VSimWithArgs, callInfo)
+	mock.lockVSimWithArgs.Unlock()
+	return mock.VSimWithArgsFunc(ctx, key, val, args)
+}
+
+// VSimWithArgsCalls gets all the calls that were made to VSimWithArgs.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.VSimWithArgsCalls())
+func (mock *GoRedisClientMock) VSimWithArgsCalls() []struct {
+	Ctx  context.Context
+	Key  string
+	Val  redis.Vector
+	Args *redis.VSimArgs
+} {
+	var calls []struct {
+		Ctx  context.Context
+		Key  string
+		Val  redis.Vector
+		Args *redis.VSimArgs
+	}
+	mock.lockVSimWithArgs.RLock()
+	calls = mock.calls.VSimWithArgs
+	mock.lockVSimWithArgs.RUnlock()
+	return calls
+}
+
+// VSimWithArgsWithScores calls VSimWithArgsWithScoresFunc.
+func (mock *GoRedisClientMock) VSimWithArgsWithScores(ctx context.Context, key string, val redis.Vector, args *redis.VSimArgs) *redis.VectorScoreSliceCmd {
+	if mock.VSimWithArgsWithScoresFunc == nil {
+		panic("GoRedisClientMock.VSimWithArgsWithScoresFunc: method is nil but GoRedisClient.VSimWithArgsWithScores was just called")
+	}
+	callInfo := struct {
+		Ctx  context.Context
+		Key  string
+		Val  redis.Vector
+		Args *redis.VSimArgs
+	}{
+		Ctx:  ctx,
+		Key:  key,
+		Val:  val,
+		Args: args,
+	}
+	mock.lockVSimWithArgsWithScores.Lock()
+	mock.calls.VSimWithArgsWithScores = append(mock.calls.VSimWithArgsWithScores, callInfo)
+	mock.lockVSimWithArgsWithScores.Unlock()
+	return mock.VSimWithArgsWithScoresFunc(ctx, key, val, args)
+}
+
+// VSimWithArgsWithScoresCalls gets all the calls that were made to VSimWithArgsWithScores.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.VSimWithArgsWithScoresCalls())
+func (mock *GoRedisClientMock) VSimWithArgsWithScoresCalls() []struct {
+	Ctx  context.Context
+	Key  string
+	Val  redis.Vector
+	Args *redis.VSimArgs
+} {
+	var calls []struct {
+		Ctx  context.Context
+		Key  string
+		Val  redis.Vector
+		Args *redis.VSimArgs
+	}
+	mock.lockVSimWithArgsWithScores.RLock()
+	calls = mock.calls.VSimWithArgsWithScores
+	mock.lockVSimWithArgsWithScores.RUnlock()
+	return calls
+}
+
+// VSimWithScores calls VSimWithScoresFunc.
+func (mock *GoRedisClientMock) VSimWithScores(ctx context.Context, key string, val redis.Vector) *redis.VectorScoreSliceCmd {
+	if mock.VSimWithScoresFunc == nil {
+		panic("GoRedisClientMock.VSimWithScoresFunc: method is nil but GoRedisClient.VSimWithScores was just called")
+	}
+	callInfo := struct {
+		Ctx context.Context
+		Key string
+		Val redis.Vector
+	}{
+		Ctx: ctx,
+		Key: key,
+		Val: val,
+	}
+	mock.lockVSimWithScores.Lock()
+	mock.calls.VSimWithScores = append(mock.calls.VSimWithScores, callInfo)
+	mock.lockVSimWithScores.Unlock()
+	return mock.VSimWithScoresFunc(ctx, key, val)
+}
+
+// VSimWithScoresCalls gets all the calls that were made to VSimWithScores.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.VSimWithScoresCalls())
+func (mock *GoRedisClientMock) VSimWithScoresCalls() []struct {
+	Ctx context.Context
+	Key string
+	Val redis.Vector
+} {
+	var calls []struct {
+		Ctx context.Context
+		Key string
+		Val redis.Vector
+	}
+	mock.lockVSimWithScores.RLock()
+	calls = mock.calls.VSimWithScores
+	mock.lockVSimWithScores.RUnlock()
 	return calls
 }
 
