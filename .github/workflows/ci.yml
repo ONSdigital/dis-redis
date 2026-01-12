@@ -6,59 +6,66 @@ on:
   pull_request:
     branches: [main]
 
+# Single source of truth for tool versions
+env:
+  GO_VERSION: '1.24.11'
+  GOLANGCI_LINT_VERSION: 'v2.5.0'
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  dis-redis-setup:
+  dis-redis-audit:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Set up Go
+      - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: 'stable'
-
-  dis-redis-audit:
-    needs: dis-redis-setup
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Generate Go Module List
-        run: go list -json -m all > go.list
-      - name: Run audit check with Nancy
-        uses: sonatype-nexus-community/nancy-github-action@main
-        with:
-          nancyVersion: latest
-
-  dis-redis-build:
-    needs: dis-redis-setup
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Run build test
-        run: make build
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+      - name: Install dis-vulncheck
+        run: go install github.com/ONSdigital/dis-vulncheck@latest
+      - name: Run audit
+        run: make audit
 
   dis-redis-lint:
-    needs: dis-redis-setup
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Run lint checks
+      - uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+      - name: Run Go lint checks
         uses: golangci/golangci-lint-action@v8
         with:
-          version: v2.1.6
+          version: ${{ env.GOLANGCI_LINT_VERSION }}
+          install-mode: go
 
   dis-redis-unit:
-    needs: dis-redis-setup
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Run unit tests
+      - uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+      - name: Run Go unit tests
         run: make test
+
+  dis-redis-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+      - name: Run Go build test
+        run: make build
