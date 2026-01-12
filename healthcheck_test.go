@@ -3,6 +3,7 @@ package redis
 import (
 	"context"
 	"errors"
+	"net/http"
 	"testing"
 
 	health "github.com/ONSdigital/dp-healthcheck/healthcheck"
@@ -33,17 +34,19 @@ func TestChecker(t *testing.T) {
 			So(len(mockRedisClient.PingCalls()), ShouldEqual, 1)
 			So(checkState.Status(), ShouldEqual, health.StatusOK)
 			So(checkState.Message(), ShouldEqual, MsgHealthy)
-			So(checkState.StatusCode(), ShouldEqual, 200)
+			So(checkState.StatusCode(), ShouldEqual, http.StatusOK)
 		})
 	})
 
 	Convey("Given that Redis is unhealthy", t, func() {
 		ctx := context.Background()
 
+		mockError := errors.New("failed connection")
+
 		mockRedisClient := &mocks.GoRedisClientMock{
 			PingFunc: func(ctx context.Context) *redis.StatusCmd {
 				cmd := redis.NewStatusCmd(ctx)
-				cmd.SetErr(errors.New("failed connection"))
+				cmd.SetErr(mockError)
 				return cmd
 			},
 		}
@@ -56,8 +59,8 @@ func TestChecker(t *testing.T) {
 
 			So(len(mockRedisClient.PingCalls()), ShouldEqual, 1)
 			So(checkState.Status(), ShouldEqual, health.StatusCritical)
-			So(checkState.Message(), ShouldEqual, ErrorFailedConnection.Error())
-			So(checkState.StatusCode(), ShouldEqual, 500)
+			So(checkState.Message(), ShouldEqual, mockError.Error())
+			So(checkState.StatusCode(), ShouldEqual, http.StatusInternalServerError)
 		})
 	})
 }

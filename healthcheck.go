@@ -2,16 +2,12 @@ package redis
 
 import (
 	"context"
-	"errors"
+	"net/http"
 
 	health "github.com/ONSdigital/dp-healthcheck/healthcheck"
 )
 
 const MsgHealthy = "redis is healthy"
-
-var (
-	ErrorFailedConnection = errors.New("couldn't connect to redis")
-)
 
 // Checker executes all healthchecks and then updates the health state
 func (cli *Client) Checker(ctx context.Context, state *health.CheckState) error {
@@ -40,8 +36,8 @@ func (cli *Client) Checker(ctx context.Context, state *health.CheckState) error 
 func (cli *Client) Ping(ctx context.Context) (code int, err error) {
 	err = cli.redisClient.Ping(ctx).Err()
 	if err != nil {
-		return 500, ErrorFailedConnection
+		return http.StatusInternalServerError, err
 	}
 
-	return 200, nil
+	return http.StatusOK, nil
 }
