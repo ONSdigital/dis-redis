@@ -67,7 +67,9 @@ Tests and static checks are run via:
 
 ### Dependencies
 
-* No further dependencies other than those defined in `go.mod`
+#### Tools
+
+We use `dis-vulncheck` to do Go auditing, which you will [need to install](https://github.com/ONSdigital/dis-vulncheck).
 
 ## Contributing
 

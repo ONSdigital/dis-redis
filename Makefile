@@ -9,7 +9,7 @@ all: delimiter-AUDIT audit delimiter-UNIT-TESTS test delimiter-LINTERS lint deli
 
 .PHONY: audit
 audit: ## Runs checks for security vulnerabilities on dependencies (including transient ones)
-	go list -json -m all | nancy sleuth
+	dis-vulncheck
 
 .PHONY: build
 build: ## Builds binary of library code as dis-redis
