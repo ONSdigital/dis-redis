@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"crypto/tls"
 	"fmt"
 
 	redis "github.com/redis/go-redis/v9"
@@ -10,8 +11,9 @@ import (
 // Any value that is not provided will use the default redis options value.
 type ClientConfig struct {
 	// go-redis config overrides
-	Address  string
-	Database *int
+	Address   string
+	Database  *int
+	TLSConfig *tls.Config
 }
 
 // Get creates a default redis options and overwrites with any values provided in ClientConfig
@@ -29,6 +31,10 @@ func (c *ClientConfig) Get() (*redis.Options, error) {
 
 	if c.Address != "" {
 		cfg.Addr = c.Address
+	}
+
+	if c.TLSConfig != nil {
+		cfg.TLSConfig = c.TLSConfig
 	}
 
 	return cfg, nil
