@@ -15,7 +15,7 @@ type Client struct {
 
 // NewClient returns a new Client with the provided config
 func NewClient(ctx context.Context, clientConfig *ClientConfig) (*Client, error) {
-	client, err := generateClient(clientConfig)
+	client, err := generateClient(ctx, clientConfig)
 	if err != nil {
 		return nil, fmt.Errorf("error generating client: %w", err)
 	}
@@ -31,11 +31,12 @@ func NewClientWithCustomClient(ctx context.Context, clientConfig *ClientConfig, 
 }
 
 // generateClient creates a Redis Client using the provided configuration
-func generateClient(clientConfig *ClientConfig) (redis.UniversalClient, error) {
-	options, err := clientConfig.Get()
+func generateClient(ctx context.Context, clientConfig *ClientConfig) (redis.UniversalClient, error) {
+	options, err := clientConfig.Get(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("error getting client config: %w", err)
 	}
+
 	return redis.NewClient(options), nil
 }
 

@@ -22,6 +22,10 @@ import disRedis "github.com/ONSdigital/dis-redis"
 
 ```
 
+### AWS Auth
+
+dis-redis supports IAM authentication to AWS services. You will need to supply your application's `username` and the `region` to activate this.
+
 ### Health checker
 
 Using dis-redis checker function currently performs a PING request against redis.

@@ -1,15 +1,19 @@
 package redis
 
 import (
+	"context"
 	"crypto/tls"
 	"fmt"
 
+	"github.com/ONSdigital/dis-redis/awsauth"
 	redis "github.com/redis/go-redis/v9"
 )
 
 // ClientConfig exposes the optional configurable parameters for a client to overwrite default redis options values.
 // Any value that is not provided will use the default redis options value.
 type ClientConfig struct {
+	Region   string
+	Username string
 	// go-redis config overrides
 	Address   string
 	Database  *int
@@ -17,7 +21,7 @@ type ClientConfig struct {
 }
 
 // Get creates a default redis options and overwrites with any values provided in ClientConfig
-func (c *ClientConfig) Get() (*redis.Options, error) {
+func (c *ClientConfig) Get(ctx context.Context) (*redis.Options, error) {
 	if err := c.Validate(); err != nil {
 		return nil, fmt.Errorf("validation error: %w", err)
 	}
@@ -37,6 +41,15 @@ func (c *ClientConfig) Get() (*redis.Options, error) {
 		cfg.TLSConfig = c.TLSConfig
 	}
 
+	if c.Region != "" && c.Username != "" {
+		credsProvider, err := getAWSCredsProvider(ctx, cfg.Addr, c.Region, c.Username)
+		if err != nil {
+			return nil, fmt.Errorf("error getting AWS credentials provider: %w", err)
+		}
+
+		cfg.CredentialsProviderContext = credsProvider
+	}
+
 	return cfg, nil
 }
 
@@ -48,8 +61,29 @@ func getDefaultConfig() *redis.Options {
 	}
 }
 
+func getAWSCredsProvider(ctx context.Context, endpoint, region, username string) (func(context.Context) (string, string, error), error) {
+	tokenGenerator, err := awsauth.NewTokenGenerator(ctx, region, endpoint)
+	if err != nil {
+		return nil, fmt.Errorf("error creating token generator: %w", err)
+	}
+
+	credsProvider := func(context.Context) (string, string, error) {
+		token, err := tokenGenerator.Generate(ctx)
+		return username, token, err
+	}
+
+	return credsProvider, nil
+}
+
 // Validate will validate that compulsory values are provided in config
 func (c *ClientConfig) Validate() error {
 	// Validations on the config can be added here.
+	if c.Region != "" && c.Username == "" {
+		return fmt.Errorf("username must be provided when region is set")
+	}
+
+	if c.Username != "" && c.Region == "" {
+		return fmt.Errorf("region must be provided when username is set")
+	}
 	return nil
 }
