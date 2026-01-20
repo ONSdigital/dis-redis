@@ -13,14 +13,15 @@ import (
 
 // TokenGenerator generates AWS authentication tokens for AWS.
 type TokenGenerator struct {
-	creds  aws.CredentialsProvider
-	region string
-	host   string
+	creds   aws.CredentialsProvider
+	host    string
+	region  string
+	service string
 }
 
 // NewTokenGenerator creates a new TokenGenerator for the specified region and host.
-func NewTokenGenerator(ctx context.Context, region, host string) (*TokenGenerator, error) {
-	creds, err := awsConfig.LoadDefaultConfig(ctx,
+func NewTokenGenerator(ctx context.Context, region, host, service string) (*TokenGenerator, error) {
+	cfg, err := awsConfig.LoadDefaultConfig(ctx,
 		awsConfig.WithRegion(region),
 	)
 	if err != nil {
@@ -28,9 +29,10 @@ func NewTokenGenerator(ctx context.Context, region, host string) (*TokenGenerato
 	}
 
 	return &TokenGenerator{
-		creds:  creds.Credentials,
-		region: region,
-		host:   host,
+		creds:   cfg.Credentials,
+		host:    host,
+		region:  region,
+		service: service,
 	}, nil
 }
 
@@ -55,7 +57,7 @@ func (t *TokenGenerator) Generate(ctx context.Context) (string, error) {
 		currentCreds,
 		req,
 		"",
-		"memorydb",
+		t.service,
 		t.region,
 		time.Now(),
 	)

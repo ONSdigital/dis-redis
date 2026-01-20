@@ -14,6 +14,7 @@ import (
 type ClientConfig struct {
 	Region   string
 	Username string
+	Service  string
 	// go-redis config overrides
 	Address   string
 	Database  *int
@@ -41,8 +42,8 @@ func (c *ClientConfig) Get(ctx context.Context) (*redis.Options, error) {
 		cfg.TLSConfig = c.TLSConfig
 	}
 
-	if c.Region != "" && c.Username != "" {
-		credsProvider, err := getAWSCredsProvider(ctx, cfg.Addr, c.Region, c.Username)
+	if c.Region != "" && c.Username != "" && c.Service != "" {
+		credsProvider, err := getAWSCredsProvider(ctx, cfg.Addr, c.Region, c.Username, c.Service)
 		if err != nil {
 			return nil, fmt.Errorf("error getting AWS credentials provider: %w", err)
 		}
@@ -61,8 +62,8 @@ func getDefaultConfig() *redis.Options {
 	}
 }
 
-func getAWSCredsProvider(ctx context.Context, endpoint, region, username string) (func(context.Context) (string, string, error), error) {
-	tokenGenerator, err := awsauth.NewTokenGenerator(ctx, region, endpoint)
+func getAWSCredsProvider(ctx context.Context, endpoint, region, username, service string) (func(context.Context) (string, string, error), error) {
+	tokenGenerator, err := awsauth.NewTokenGenerator(ctx, region, endpoint, service)
 	if err != nil {
 		return nil, fmt.Errorf("error creating token generator: %w", err)
 	}

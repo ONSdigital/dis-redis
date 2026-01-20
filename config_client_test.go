@@ -48,10 +48,12 @@ func TestGetConfig(t *testing.T) {
 	Convey("When a configuration is requested with AWS options", t, func() {
 		expectedRegion := "eu-west-2"
 		expectedUsername := "test-user"
+		expectedService := "memorydb"
 
 		cfg := ClientConfig{
 			Region:   expectedRegion,
 			Username: expectedUsername,
+			Service:  expectedService,
 		}
 		ctx := context.Background()
 		options, err := cfg.Get(ctx)
