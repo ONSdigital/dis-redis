@@ -17,6 +17,7 @@ type TokenGenerator struct {
 	host    string
 	region  string
 	service string
+	signer  *v4.Signer
 }
 
 // NewTokenGenerator creates a new TokenGenerator for the specified region and host.
@@ -33,6 +34,7 @@ func NewTokenGenerator(ctx context.Context, region, host, service string) (*Toke
 		host:    host,
 		region:  region,
 		service: service,
+		signer:  v4.NewSigner(),
 	}, nil
 }
 
@@ -50,9 +52,7 @@ func (t *TokenGenerator) Generate(ctx context.Context) (string, error) {
 		return "", err
 	}
 
-	signer := v4.NewSigner()
-
-	err = signer.SignHTTP(
+	err = t.signer.SignHTTP(
 		ctx,
 		currentCreds,
 		req,
