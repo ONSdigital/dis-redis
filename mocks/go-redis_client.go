@@ -33,6 +33,9 @@ var _ interfaces.GoRedisClient = &GoRedisClientMock{}
 //			ACLDryRunFunc: func(ctx context.Context, username string, command ...interface{}) *redis.StringCmd {
 //				panic("mock out the ACLDryRun method")
 //			},
+//			ACLGenPassFunc: func(ctx context.Context, bit int) *redis.StringCmd {
+//				panic("mock out the ACLGenPass method")
+//			},
 //			ACLListFunc: func(ctx context.Context) *redis.StringSliceCmd {
 //				panic("mock out the ACLList method")
 //			},
@@ -44,6 +47,12 @@ var _ interfaces.GoRedisClient = &GoRedisClientMock{}
 //			},
 //			ACLSetUserFunc: func(ctx context.Context, username string, rules ...string) *redis.StatusCmd {
 //				panic("mock out the ACLSetUser method")
+//			},
+//			ACLUsersFunc: func(ctx context.Context) *redis.StringSliceCmd {
+//				panic("mock out the ACLUsers method")
+//			},
+//			ACLWhoAmIFunc: func(ctx context.Context) *redis.StringCmd {
+//				panic("mock out the ACLWhoAmI method")
 //			},
 //			AddHookFunc: func(hook redis.Hook)  {
 //				panic("mock out the AddHook method")
@@ -150,8 +159,20 @@ var _ interfaces.GoRedisClient = &GoRedisClientMock{}
 //			BitOpAndFunc: func(ctx context.Context, destKey string, keys ...string) *redis.IntCmd {
 //				panic("mock out the BitOpAnd method")
 //			},
+//			BitOpAndOrFunc: func(ctx context.Context, destKey string, keys ...string) *redis.IntCmd {
+//				panic("mock out the BitOpAndOr method")
+//			},
+//			BitOpDiffFunc: func(ctx context.Context, destKey string, keys ...string) *redis.IntCmd {
+//				panic("mock out the BitOpDiff method")
+//			},
+//			BitOpDiff1Func: func(ctx context.Context, destKey string, keys ...string) *redis.IntCmd {
+//				panic("mock out the BitOpDiff1 method")
+//			},
 //			BitOpNotFunc: func(ctx context.Context, destKey string, key string) *redis.IntCmd {
 //				panic("mock out the BitOpNot method")
+//			},
+//			BitOpOneFunc: func(ctx context.Context, destKey string, keys ...string) *redis.IntCmd {
+//				panic("mock out the BitOpOne method")
 //			},
 //			BitOpOrFunc: func(ctx context.Context, destKey string, keys ...string) *redis.IntCmd {
 //				panic("mock out the BitOpOr method")
@@ -251,6 +272,9 @@ var _ interfaces.GoRedisClient = &GoRedisClientMock{}
 //			},
 //			ClientListFunc: func(ctx context.Context) *redis.StringCmd {
 //				panic("mock out the ClientList method")
+//			},
+//			ClientMaintNotificationsFunc: func(ctx context.Context, enabled bool, endpointType string) *redis.StatusCmd {
+//				panic("mock out the ClientMaintNotifications method")
 //			},
 //			ClientPauseFunc: func(ctx context.Context, dur time.Duration) *redis.BoolCmd {
 //				panic("mock out the ClientPause method")
@@ -378,6 +402,12 @@ var _ interfaces.GoRedisClient = &GoRedisClientMock{}
 //			DelFunc: func(ctx context.Context, keys ...string) *redis.IntCmd {
 //				panic("mock out the Del method")
 //			},
+//			DelExArgsFunc: func(ctx context.Context, key string, a redis.DelExArgs) *redis.IntCmd {
+//				panic("mock out the DelExArgs method")
+//			},
+//			DigestFunc: func(ctx context.Context, key string) *redis.DigestCmd {
+//				panic("mock out the Digest method")
+//			},
 //			DoFunc: func(ctx context.Context, args ...interface{}) *redis.Cmd {
 //				panic("mock out the Do method")
 //			},
@@ -485,6 +515,12 @@ var _ interfaces.GoRedisClient = &GoRedisClientMock{}
 //			},
 //			FTExplainWithArgsFunc: func(ctx context.Context, index string, query string, options *redis.FTExplainOptions) *redis.StringCmd {
 //				panic("mock out the FTExplainWithArgs method")
+//			},
+//			FTHybridFunc: func(ctx context.Context, index string, searchExpr string, vectorField string, vectorData redis.Vector) *redis.FTHybridCmd {
+//				panic("mock out the FTHybrid method")
+//			},
+//			FTHybridWithArgsFunc: func(ctx context.Context, index string, options *redis.FTHybridOptions) *redis.FTHybridCmd {
+//				panic("mock out the FTHybridWithArgs method")
 //			},
 //			FTInfoFunc: func(ctx context.Context, index string) *redis.FTInfoCmd {
 //				panic("mock out the FTInfo method")
@@ -870,11 +906,20 @@ var _ interfaces.GoRedisClient = &GoRedisClientMock{}
 //			LastSaveFunc: func(ctx context.Context) *redis.IntCmd {
 //				panic("mock out the LastSave method")
 //			},
+//			LatencyFunc: func(ctx context.Context) *redis.LatencyCmd {
+//				panic("mock out the Latency method")
+//			},
+//			LatencyResetFunc: func(ctx context.Context, events ...interface{}) *redis.StatusCmd {
+//				panic("mock out the LatencyReset method")
+//			},
 //			MGetFunc: func(ctx context.Context, keys ...string) *redis.SliceCmd {
 //				panic("mock out the MGet method")
 //			},
 //			MSetFunc: func(ctx context.Context, values ...interface{}) *redis.StatusCmd {
 //				panic("mock out the MSet method")
+//			},
+//			MSetEXFunc: func(ctx context.Context, args redis.MSetEXArgs, values ...interface{}) *redis.IntCmd {
+//				panic("mock out the MSetEX method")
 //			},
 //			MSetNXFunc: func(ctx context.Context, values ...interface{}) *redis.BoolCmd {
 //				panic("mock out the MSetNX method")
@@ -1101,6 +1146,30 @@ var _ interfaces.GoRedisClient = &GoRedisClientMock{}
 //			SetExFunc: func(ctx context.Context, key string, value interface{}, expiration time.Duration) *redis.StatusCmd {
 //				panic("mock out the SetEx method")
 //			},
+//			SetIFDEQFunc: func(ctx context.Context, key string, value interface{}, matchDigest uint64, expiration time.Duration) *redis.StatusCmd {
+//				panic("mock out the SetIFDEQ method")
+//			},
+//			SetIFDEQGetFunc: func(ctx context.Context, key string, value interface{}, matchDigest uint64, expiration time.Duration) *redis.StringCmd {
+//				panic("mock out the SetIFDEQGet method")
+//			},
+//			SetIFDNEFunc: func(ctx context.Context, key string, value interface{}, matchDigest uint64, expiration time.Duration) *redis.StatusCmd {
+//				panic("mock out the SetIFDNE method")
+//			},
+//			SetIFDNEGetFunc: func(ctx context.Context, key string, value interface{}, matchDigest uint64, expiration time.Duration) *redis.StringCmd {
+//				panic("mock out the SetIFDNEGet method")
+//			},
+//			SetIFEQFunc: func(ctx context.Context, key string, value interface{}, matchValue interface{}, expiration time.Duration) *redis.StatusCmd {
+//				panic("mock out the SetIFEQ method")
+//			},
+//			SetIFEQGetFunc: func(ctx context.Context, key string, value interface{}, matchValue interface{}, expiration time.Duration) *redis.StringCmd {
+//				panic("mock out the SetIFEQGet method")
+//			},
+//			SetIFNEFunc: func(ctx context.Context, key string, value interface{}, matchValue interface{}, expiration time.Duration) *redis.StatusCmd {
+//				panic("mock out the SetIFNE method")
+//			},
+//			SetIFNEGetFunc: func(ctx context.Context, key string, value interface{}, matchValue interface{}, expiration time.Duration) *redis.StringCmd {
+//				panic("mock out the SetIFNEGet method")
+//			},
 //			SetNXFunc: func(ctx context.Context, key string, value interface{}, expiration time.Duration) *redis.BoolCmd {
 //				panic("mock out the SetNX method")
 //			},
@@ -1124,6 +1193,12 @@ var _ interfaces.GoRedisClient = &GoRedisClientMock{}
 //			},
 //			SlowLogGetFunc: func(ctx context.Context, num int64) *redis.SlowLogCmd {
 //				panic("mock out the SlowLogGet method")
+//			},
+//			SlowLogLenFunc: func(ctx context.Context) *redis.IntCmd {
+//				panic("mock out the SlowLogLen method")
+//			},
+//			SlowLogResetFunc: func(ctx context.Context) *redis.StatusCmd {
+//				panic("mock out the SlowLogReset method")
 //			},
 //			SortFunc: func(ctx context.Context, key string, sort *redis.Sort) *redis.StringSliceCmd {
 //				panic("mock out the Sort method")
@@ -1359,6 +1434,9 @@ var _ interfaces.GoRedisClient = &GoRedisClientMock{}
 //			VRandMemberCountFunc: func(ctx context.Context, key string, count int) *redis.StringSliceCmd {
 //				panic("mock out the VRandMemberCount method")
 //			},
+//			VRangeFunc: func(ctx context.Context, key string, start string, end string, count int64) *redis.StringSliceCmd {
+//				panic("mock out the VRange method")
+//			},
 //			VRemFunc: func(ctx context.Context, key string, element string) *redis.BoolCmd {
 //				panic("mock out the VRem method")
 //			},
@@ -1383,6 +1461,9 @@ var _ interfaces.GoRedisClient = &GoRedisClientMock{}
 //			XAckFunc: func(ctx context.Context, stream string, group string, ids ...string) *redis.IntCmd {
 //				panic("mock out the XAck method")
 //			},
+//			XAckDelFunc: func(ctx context.Context, stream string, group string, mode string, ids ...string) *redis.SliceCmd {
+//				panic("mock out the XAckDel method")
+//			},
 //			XAddFunc: func(ctx context.Context, a *redis.XAddArgs) *redis.StringCmd {
 //				panic("mock out the XAdd method")
 //			},
@@ -1400,6 +1481,9 @@ var _ interfaces.GoRedisClient = &GoRedisClientMock{}
 //			},
 //			XDelFunc: func(ctx context.Context, stream string, ids ...string) *redis.IntCmd {
 //				panic("mock out the XDel method")
+//			},
+//			XDelExFunc: func(ctx context.Context, stream string, mode string, ids ...string) *redis.SliceCmd {
+//				panic("mock out the XDelEx method")
 //			},
 //			XGroupCreateFunc: func(ctx context.Context, stream string, group string, start string) *redis.StatusCmd {
 //				panic("mock out the XGroupCreate method")
@@ -1467,11 +1551,23 @@ var _ interfaces.GoRedisClient = &GoRedisClientMock{}
 //			XTrimMaxLenApproxFunc: func(ctx context.Context, key string, maxLen int64, limit int64) *redis.IntCmd {
 //				panic("mock out the XTrimMaxLenApprox method")
 //			},
+//			XTrimMaxLenApproxModeFunc: func(ctx context.Context, key string, maxLen int64, limit int64, mode string) *redis.IntCmd {
+//				panic("mock out the XTrimMaxLenApproxMode method")
+//			},
+//			XTrimMaxLenModeFunc: func(ctx context.Context, key string, maxLen int64, mode string) *redis.IntCmd {
+//				panic("mock out the XTrimMaxLenMode method")
+//			},
 //			XTrimMinIDFunc: func(ctx context.Context, key string, minID string) *redis.IntCmd {
 //				panic("mock out the XTrimMinID method")
 //			},
 //			XTrimMinIDApproxFunc: func(ctx context.Context, key string, minID string, limit int64) *redis.IntCmd {
 //				panic("mock out the XTrimMinIDApprox method")
+//			},
+//			XTrimMinIDApproxModeFunc: func(ctx context.Context, key string, minID string, limit int64, mode string) *redis.IntCmd {
+//				panic("mock out the XTrimMinIDApproxMode method")
+//			},
+//			XTrimMinIDModeFunc: func(ctx context.Context, key string, minID string, mode string) *redis.IntCmd {
+//				panic("mock out the XTrimMinIDMode method")
 //			},
 //			ZAddFunc: func(ctx context.Context, key string, members ...redis.Z) *redis.IntCmd {
 //				panic("mock out the ZAdd method")
@@ -1642,6 +1738,9 @@ type GoRedisClientMock struct {
 	// ACLDryRunFunc mocks the ACLDryRun method.
 	ACLDryRunFunc func(ctx context.Context, username string, command ...interface{}) *redis.StringCmd
 
+	// ACLGenPassFunc mocks the ACLGenPass method.
+	ACLGenPassFunc func(ctx context.Context, bit int) *redis.StringCmd
+
 	// ACLListFunc mocks the ACLList method.
 	ACLListFunc func(ctx context.Context) *redis.StringSliceCmd
 
@@ -1653,6 +1752,12 @@ type GoRedisClientMock struct {
 
 	// ACLSetUserFunc mocks the ACLSetUser method.
 	ACLSetUserFunc func(ctx context.Context, username string, rules ...string) *redis.StatusCmd
+
+	// ACLUsersFunc mocks the ACLUsers method.
+	ACLUsersFunc func(ctx context.Context) *redis.StringSliceCmd
+
+	// ACLWhoAmIFunc mocks the ACLWhoAmI method.
+	ACLWhoAmIFunc func(ctx context.Context) *redis.StringCmd
 
 	// AddHookFunc mocks the AddHook method.
 	AddHookFunc func(hook redis.Hook)
@@ -1759,8 +1864,20 @@ type GoRedisClientMock struct {
 	// BitOpAndFunc mocks the BitOpAnd method.
 	BitOpAndFunc func(ctx context.Context, destKey string, keys ...string) *redis.IntCmd
 
+	// BitOpAndOrFunc mocks the BitOpAndOr method.
+	BitOpAndOrFunc func(ctx context.Context, destKey string, keys ...string) *redis.IntCmd
+
+	// BitOpDiffFunc mocks the BitOpDiff method.
+	BitOpDiffFunc func(ctx context.Context, destKey string, keys ...string) *redis.IntCmd
+
+	// BitOpDiff1Func mocks the BitOpDiff1 method.
+	BitOpDiff1Func func(ctx context.Context, destKey string, keys ...string) *redis.IntCmd
+
 	// BitOpNotFunc mocks the BitOpNot method.
 	BitOpNotFunc func(ctx context.Context, destKey string, key string) *redis.IntCmd
+
+	// BitOpOneFunc mocks the BitOpOne method.
+	BitOpOneFunc func(ctx context.Context, destKey string, keys ...string) *redis.IntCmd
 
 	// BitOpOrFunc mocks the BitOpOr method.
 	BitOpOrFunc func(ctx context.Context, destKey string, keys ...string) *redis.IntCmd
@@ -1860,6 +1977,9 @@ type GoRedisClientMock struct {
 
 	// ClientListFunc mocks the ClientList method.
 	ClientListFunc func(ctx context.Context) *redis.StringCmd
+
+	// ClientMaintNotificationsFunc mocks the ClientMaintNotifications method.
+	ClientMaintNotificationsFunc func(ctx context.Context, enabled bool, endpointType string) *redis.StatusCmd
 
 	// ClientPauseFunc mocks the ClientPause method.
 	ClientPauseFunc func(ctx context.Context, dur time.Duration) *redis.BoolCmd
@@ -1987,6 +2107,12 @@ type GoRedisClientMock struct {
 	// DelFunc mocks the Del method.
 	DelFunc func(ctx context.Context, keys ...string) *redis.IntCmd
 
+	// DelExArgsFunc mocks the DelExArgs method.
+	DelExArgsFunc func(ctx context.Context, key string, a redis.DelExArgs) *redis.IntCmd
+
+	// DigestFunc mocks the Digest method.
+	DigestFunc func(ctx context.Context, key string) *redis.DigestCmd
+
 	// DoFunc mocks the Do method.
 	DoFunc func(ctx context.Context, args ...interface{}) *redis.Cmd
 
@@ -2094,6 +2220,12 @@ type GoRedisClientMock struct {
 
 	// FTExplainWithArgsFunc mocks the FTExplainWithArgs method.
 	FTExplainWithArgsFunc func(ctx context.Context, index string, query string, options *redis.FTExplainOptions) *redis.StringCmd
+
+	// FTHybridFunc mocks the FTHybrid method.
+	FTHybridFunc func(ctx context.Context, index string, searchExpr string, vectorField string, vectorData redis.Vector) *redis.FTHybridCmd
+
+	// FTHybridWithArgsFunc mocks the FTHybridWithArgs method.
+	FTHybridWithArgsFunc func(ctx context.Context, index string, options *redis.FTHybridOptions) *redis.FTHybridCmd
 
 	// FTInfoFunc mocks the FTInfo method.
 	FTInfoFunc func(ctx context.Context, index string) *redis.FTInfoCmd
@@ -2479,11 +2611,20 @@ type GoRedisClientMock struct {
 	// LastSaveFunc mocks the LastSave method.
 	LastSaveFunc func(ctx context.Context) *redis.IntCmd
 
+	// LatencyFunc mocks the Latency method.
+	LatencyFunc func(ctx context.Context) *redis.LatencyCmd
+
+	// LatencyResetFunc mocks the LatencyReset method.
+	LatencyResetFunc func(ctx context.Context, events ...interface{}) *redis.StatusCmd
+
 	// MGetFunc mocks the MGet method.
 	MGetFunc func(ctx context.Context, keys ...string) *redis.SliceCmd
 
 	// MSetFunc mocks the MSet method.
 	MSetFunc func(ctx context.Context, values ...interface{}) *redis.StatusCmd
+
+	// MSetEXFunc mocks the MSetEX method.
+	MSetEXFunc func(ctx context.Context, args redis.MSetEXArgs, values ...interface{}) *redis.IntCmd
 
 	// MSetNXFunc mocks the MSetNX method.
 	MSetNXFunc func(ctx context.Context, values ...interface{}) *redis.BoolCmd
@@ -2710,6 +2851,30 @@ type GoRedisClientMock struct {
 	// SetExFunc mocks the SetEx method.
 	SetExFunc func(ctx context.Context, key string, value interface{}, expiration time.Duration) *redis.StatusCmd
 
+	// SetIFDEQFunc mocks the SetIFDEQ method.
+	SetIFDEQFunc func(ctx context.Context, key string, value interface{}, matchDigest uint64, expiration time.Duration) *redis.StatusCmd
+
+	// SetIFDEQGetFunc mocks the SetIFDEQGet method.
+	SetIFDEQGetFunc func(ctx context.Context, key string, value interface{}, matchDigest uint64, expiration time.Duration) *redis.StringCmd
+
+	// SetIFDNEFunc mocks the SetIFDNE method.
+	SetIFDNEFunc func(ctx context.Context, key string, value interface{}, matchDigest uint64, expiration time.Duration) *redis.StatusCmd
+
+	// SetIFDNEGetFunc mocks the SetIFDNEGet method.
+	SetIFDNEGetFunc func(ctx context.Context, key string, value interface{}, matchDigest uint64, expiration time.Duration) *redis.StringCmd
+
+	// SetIFEQFunc mocks the SetIFEQ method.
+	SetIFEQFunc func(ctx context.Context, key string, value interface{}, matchValue interface{}, expiration time.Duration) *redis.StatusCmd
+
+	// SetIFEQGetFunc mocks the SetIFEQGet method.
+	SetIFEQGetFunc func(ctx context.Context, key string, value interface{}, matchValue interface{}, expiration time.Duration) *redis.StringCmd
+
+	// SetIFNEFunc mocks the SetIFNE method.
+	SetIFNEFunc func(ctx context.Context, key string, value interface{}, matchValue interface{}, expiration time.Duration) *redis.StatusCmd
+
+	// SetIFNEGetFunc mocks the SetIFNEGet method.
+	SetIFNEGetFunc func(ctx context.Context, key string, value interface{}, matchValue interface{}, expiration time.Duration) *redis.StringCmd
+
 	// SetNXFunc mocks the SetNX method.
 	SetNXFunc func(ctx context.Context, key string, value interface{}, expiration time.Duration) *redis.BoolCmd
 
@@ -2733,6 +2898,12 @@ type GoRedisClientMock struct {
 
 	// SlowLogGetFunc mocks the SlowLogGet method.
 	SlowLogGetFunc func(ctx context.Context, num int64) *redis.SlowLogCmd
+
+	// SlowLogLenFunc mocks the SlowLogLen method.
+	SlowLogLenFunc func(ctx context.Context) *redis.IntCmd
+
+	// SlowLogResetFunc mocks the SlowLogReset method.
+	SlowLogResetFunc func(ctx context.Context) *redis.StatusCmd
 
 	// SortFunc mocks the Sort method.
 	SortFunc func(ctx context.Context, key string, sort *redis.Sort) *redis.StringSliceCmd
@@ -2968,6 +3139,9 @@ type GoRedisClientMock struct {
 	// VRandMemberCountFunc mocks the VRandMemberCount method.
 	VRandMemberCountFunc func(ctx context.Context, key string, count int) *redis.StringSliceCmd
 
+	// VRangeFunc mocks the VRange method.
+	VRangeFunc func(ctx context.Context, key string, start string, end string, count int64) *redis.StringSliceCmd
+
 	// VRemFunc mocks the VRem method.
 	VRemFunc func(ctx context.Context, key string, element string) *redis.BoolCmd
 
@@ -2992,6 +3166,9 @@ type GoRedisClientMock struct {
 	// XAckFunc mocks the XAck method.
 	XAckFunc func(ctx context.Context, stream string, group string, ids ...string) *redis.IntCmd
 
+	// XAckDelFunc mocks the XAckDel method.
+	XAckDelFunc func(ctx context.Context, stream string, group string, mode string, ids ...string) *redis.SliceCmd
+
 	// XAddFunc mocks the XAdd method.
 	XAddFunc func(ctx context.Context, a *redis.XAddArgs) *redis.StringCmd
 
@@ -3009,6 +3186,9 @@ type GoRedisClientMock struct {
 
 	// XDelFunc mocks the XDel method.
 	XDelFunc func(ctx context.Context, stream string, ids ...string) *redis.IntCmd
+
+	// XDelExFunc mocks the XDelEx method.
+	XDelExFunc func(ctx context.Context, stream string, mode string, ids ...string) *redis.SliceCmd
 
 	// XGroupCreateFunc mocks the XGroupCreate method.
 	XGroupCreateFunc func(ctx context.Context, stream string, group string, start string) *redis.StatusCmd
@@ -3076,11 +3256,23 @@ type GoRedisClientMock struct {
 	// XTrimMaxLenApproxFunc mocks the XTrimMaxLenApprox method.
 	XTrimMaxLenApproxFunc func(ctx context.Context, key string, maxLen int64, limit int64) *redis.IntCmd
 
+	// XTrimMaxLenApproxModeFunc mocks the XTrimMaxLenApproxMode method.
+	XTrimMaxLenApproxModeFunc func(ctx context.Context, key string, maxLen int64, limit int64, mode string) *redis.IntCmd
+
+	// XTrimMaxLenModeFunc mocks the XTrimMaxLenMode method.
+	XTrimMaxLenModeFunc func(ctx context.Context, key string, maxLen int64, mode string) *redis.IntCmd
+
 	// XTrimMinIDFunc mocks the XTrimMinID method.
 	XTrimMinIDFunc func(ctx context.Context, key string, minID string) *redis.IntCmd
 
 	// XTrimMinIDApproxFunc mocks the XTrimMinIDApprox method.
 	XTrimMinIDApproxFunc func(ctx context.Context, key string, minID string, limit int64) *redis.IntCmd
+
+	// XTrimMinIDApproxModeFunc mocks the XTrimMinIDApproxMode method.
+	XTrimMinIDApproxModeFunc func(ctx context.Context, key string, minID string, limit int64, mode string) *redis.IntCmd
+
+	// XTrimMinIDModeFunc mocks the XTrimMinIDMode method.
+	XTrimMinIDModeFunc func(ctx context.Context, key string, minID string, mode string) *redis.IntCmd
 
 	// ZAddFunc mocks the ZAdd method.
 	ZAddFunc func(ctx context.Context, key string, members ...redis.Z) *redis.IntCmd
@@ -3262,6 +3454,13 @@ type GoRedisClientMock struct {
 			// Command is the command argument value.
 			Command []interface{}
 		}
+		// ACLGenPass holds details about calls to the ACLGenPass method.
+		ACLGenPass []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Bit is the bit argument value.
+			Bit int
+		}
 		// ACLList holds details about calls to the ACLList method.
 		ACLList []struct {
 			// Ctx is the ctx argument value.
@@ -3287,6 +3486,16 @@ type GoRedisClientMock struct {
 			Username string
 			// Rules is the rules argument value.
 			Rules []string
+		}
+		// ACLUsers holds details about calls to the ACLUsers method.
+		ACLUsers []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+		}
+		// ACLWhoAmI holds details about calls to the ACLWhoAmI method.
+		ACLWhoAmI []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
 		}
 		// AddHook holds details about calls to the AddHook method.
 		AddHook []struct {
@@ -3605,6 +3814,33 @@ type GoRedisClientMock struct {
 			// Keys is the keys argument value.
 			Keys []string
 		}
+		// BitOpAndOr holds details about calls to the BitOpAndOr method.
+		BitOpAndOr []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// DestKey is the destKey argument value.
+			DestKey string
+			// Keys is the keys argument value.
+			Keys []string
+		}
+		// BitOpDiff holds details about calls to the BitOpDiff method.
+		BitOpDiff []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// DestKey is the destKey argument value.
+			DestKey string
+			// Keys is the keys argument value.
+			Keys []string
+		}
+		// BitOpDiff1 holds details about calls to the BitOpDiff1 method.
+		BitOpDiff1 []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// DestKey is the destKey argument value.
+			DestKey string
+			// Keys is the keys argument value.
+			Keys []string
+		}
 		// BitOpNot holds details about calls to the BitOpNot method.
 		BitOpNot []struct {
 			// Ctx is the ctx argument value.
@@ -3613,6 +3849,15 @@ type GoRedisClientMock struct {
 			DestKey string
 			// Key is the key argument value.
 			Key string
+		}
+		// BitOpOne holds details about calls to the BitOpOne method.
+		BitOpOne []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// DestKey is the destKey argument value.
+			DestKey string
+			// Keys is the keys argument value.
+			Keys []string
 		}
 		// BitOpOr holds details about calls to the BitOpOr method.
 		BitOpOr []struct {
@@ -3911,6 +4156,15 @@ type GoRedisClientMock struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 		}
+		// ClientMaintNotifications holds details about calls to the ClientMaintNotifications method.
+		ClientMaintNotifications []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Enabled is the enabled argument value.
+			Enabled bool
+			// EndpointType is the endpointType argument value.
+			EndpointType string
+		}
 		// ClientPause holds details about calls to the ClientPause method.
 		ClientPause []struct {
 			// Ctx is the ctx argument value.
@@ -4186,6 +4440,22 @@ type GoRedisClientMock struct {
 			Ctx context.Context
 			// Keys is the keys argument value.
 			Keys []string
+		}
+		// DelExArgs holds details about calls to the DelExArgs method.
+		DelExArgs []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// A is the a argument value.
+			A redis.DelExArgs
+		}
+		// Digest holds details about calls to the Digest method.
+		Digest []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
 		}
 		// Do holds details about calls to the Do method.
 		Do []struct {
@@ -4516,6 +4786,28 @@ type GoRedisClientMock struct {
 			Query string
 			// Options is the options argument value.
 			Options *redis.FTExplainOptions
+		}
+		// FTHybrid holds details about calls to the FTHybrid method.
+		FTHybrid []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Index is the index argument value.
+			Index string
+			// SearchExpr is the searchExpr argument value.
+			SearchExpr string
+			// VectorField is the vectorField argument value.
+			VectorField string
+			// VectorData is the vectorData argument value.
+			VectorData redis.Vector
+		}
+		// FTHybridWithArgs holds details about calls to the FTHybridWithArgs method.
+		FTHybridWithArgs []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Index is the index argument value.
+			Index string
+			// Options is the options argument value.
+			Options *redis.FTHybridOptions
 		}
 		// FTInfo holds details about calls to the FTInfo method.
 		FTInfo []struct {
@@ -5713,6 +6005,18 @@ type GoRedisClientMock struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 		}
+		// Latency holds details about calls to the Latency method.
+		Latency []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+		}
+		// LatencyReset holds details about calls to the LatencyReset method.
+		LatencyReset []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Events is the events argument value.
+			Events []interface{}
+		}
 		// MGet holds details about calls to the MGet method.
 		MGet []struct {
 			// Ctx is the ctx argument value.
@@ -5724,6 +6028,15 @@ type GoRedisClientMock struct {
 		MSet []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
+			// Values is the values argument value.
+			Values []interface{}
+		}
+		// MSetEX holds details about calls to the MSetEX method.
+		MSetEX []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Args is the args argument value.
+			Args redis.MSetEXArgs
 			// Values is the values argument value.
 			Values []interface{}
 		}
@@ -6326,6 +6639,110 @@ type GoRedisClientMock struct {
 			// Expiration is the expiration argument value.
 			Expiration time.Duration
 		}
+		// SetIFDEQ holds details about calls to the SetIFDEQ method.
+		SetIFDEQ []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// Value is the value argument value.
+			Value interface{}
+			// MatchDigest is the matchDigest argument value.
+			MatchDigest uint64
+			// Expiration is the expiration argument value.
+			Expiration time.Duration
+		}
+		// SetIFDEQGet holds details about calls to the SetIFDEQGet method.
+		SetIFDEQGet []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// Value is the value argument value.
+			Value interface{}
+			// MatchDigest is the matchDigest argument value.
+			MatchDigest uint64
+			// Expiration is the expiration argument value.
+			Expiration time.Duration
+		}
+		// SetIFDNE holds details about calls to the SetIFDNE method.
+		SetIFDNE []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// Value is the value argument value.
+			Value interface{}
+			// MatchDigest is the matchDigest argument value.
+			MatchDigest uint64
+			// Expiration is the expiration argument value.
+			Expiration time.Duration
+		}
+		// SetIFDNEGet holds details about calls to the SetIFDNEGet method.
+		SetIFDNEGet []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// Value is the value argument value.
+			Value interface{}
+			// MatchDigest is the matchDigest argument value.
+			MatchDigest uint64
+			// Expiration is the expiration argument value.
+			Expiration time.Duration
+		}
+		// SetIFEQ holds details about calls to the SetIFEQ method.
+		SetIFEQ []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// Value is the value argument value.
+			Value interface{}
+			// MatchValue is the matchValue argument value.
+			MatchValue interface{}
+			// Expiration is the expiration argument value.
+			Expiration time.Duration
+		}
+		// SetIFEQGet holds details about calls to the SetIFEQGet method.
+		SetIFEQGet []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// Value is the value argument value.
+			Value interface{}
+			// MatchValue is the matchValue argument value.
+			MatchValue interface{}
+			// Expiration is the expiration argument value.
+			Expiration time.Duration
+		}
+		// SetIFNE holds details about calls to the SetIFNE method.
+		SetIFNE []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// Value is the value argument value.
+			Value interface{}
+			// MatchValue is the matchValue argument value.
+			MatchValue interface{}
+			// Expiration is the expiration argument value.
+			Expiration time.Duration
+		}
+		// SetIFNEGet holds details about calls to the SetIFNEGet method.
+		SetIFNEGet []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// Value is the value argument value.
+			Value interface{}
+			// MatchValue is the matchValue argument value.
+			MatchValue interface{}
+			// Expiration is the expiration argument value.
+			Expiration time.Duration
+		}
 		// SetNX holds details about calls to the SetNX method.
 		SetNX []struct {
 			// Ctx is the ctx argument value.
@@ -6389,6 +6806,16 @@ type GoRedisClientMock struct {
 			Ctx context.Context
 			// Num is the num argument value.
 			Num int64
+		}
+		// SlowLogLen holds details about calls to the SlowLogLen method.
+		SlowLogLen []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+		}
+		// SlowLogReset holds details about calls to the SlowLogReset method.
+		SlowLogReset []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
 		}
 		// Sort holds details about calls to the Sort method.
 		Sort []struct {
@@ -7098,6 +7525,19 @@ type GoRedisClientMock struct {
 			// Count is the count argument value.
 			Count int
 		}
+		// VRange holds details about calls to the VRange method.
+		VRange []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// Start is the start argument value.
+			Start string
+			// End is the end argument value.
+			End string
+			// Count is the count argument value.
+			Count int64
+		}
 		// VRem holds details about calls to the VRem method.
 		VRem []struct {
 			// Ctx is the ctx argument value.
@@ -7178,6 +7618,19 @@ type GoRedisClientMock struct {
 			// Ids is the ids argument value.
 			Ids []string
 		}
+		// XAckDel holds details about calls to the XAckDel method.
+		XAckDel []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Stream is the stream argument value.
+			Stream string
+			// Group is the group argument value.
+			Group string
+			// Mode is the mode argument value.
+			Mode string
+			// Ids is the ids argument value.
+			Ids []string
+		}
 		// XAdd holds details about calls to the XAdd method.
 		XAdd []struct {
 			// Ctx is the ctx argument value.
@@ -7219,6 +7672,17 @@ type GoRedisClientMock struct {
 			Ctx context.Context
 			// Stream is the stream argument value.
 			Stream string
+			// Ids is the ids argument value.
+			Ids []string
+		}
+		// XDelEx holds details about calls to the XDelEx method.
+		XDelEx []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Stream is the stream argument value.
+			Stream string
+			// Mode is the mode argument value.
+			Mode string
 			// Ids is the ids argument value.
 			Ids []string
 		}
@@ -7430,6 +7894,30 @@ type GoRedisClientMock struct {
 			// Limit is the limit argument value.
 			Limit int64
 		}
+		// XTrimMaxLenApproxMode holds details about calls to the XTrimMaxLenApproxMode method.
+		XTrimMaxLenApproxMode []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// MaxLen is the maxLen argument value.
+			MaxLen int64
+			// Limit is the limit argument value.
+			Limit int64
+			// Mode is the mode argument value.
+			Mode string
+		}
+		// XTrimMaxLenMode holds details about calls to the XTrimMaxLenMode method.
+		XTrimMaxLenMode []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// MaxLen is the maxLen argument value.
+			MaxLen int64
+			// Mode is the mode argument value.
+			Mode string
+		}
 		// XTrimMinID holds details about calls to the XTrimMinID method.
 		XTrimMinID []struct {
 			// Ctx is the ctx argument value.
@@ -7449,6 +7937,30 @@ type GoRedisClientMock struct {
 			MinID string
 			// Limit is the limit argument value.
 			Limit int64
+		}
+		// XTrimMinIDApproxMode holds details about calls to the XTrimMinIDApproxMode method.
+		XTrimMinIDApproxMode []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// MinID is the minID argument value.
+			MinID string
+			// Limit is the limit argument value.
+			Limit int64
+			// Mode is the mode argument value.
+			Mode string
+		}
+		// XTrimMinIDMode holds details about calls to the XTrimMinIDMode method.
+		XTrimMinIDMode []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Key is the key argument value.
+			Key string
+			// MinID is the minID argument value.
+			MinID string
+			// Mode is the mode argument value.
+			Mode string
 		}
 		// ZAdd holds details about calls to the ZAdd method.
 		ZAdd []struct {
@@ -7913,10 +8425,13 @@ type GoRedisClientMock struct {
 	lockACLCatArgs                   sync.RWMutex
 	lockACLDelUser                   sync.RWMutex
 	lockACLDryRun                    sync.RWMutex
+	lockACLGenPass                   sync.RWMutex
 	lockACLList                      sync.RWMutex
 	lockACLLog                       sync.RWMutex
 	lockACLLogReset                  sync.RWMutex
 	lockACLSetUser                   sync.RWMutex
+	lockACLUsers                     sync.RWMutex
+	lockACLWhoAmI                    sync.RWMutex
 	lockAddHook                      sync.RWMutex
 	lockAppend                       sync.RWMutex
 	lockBFAdd                        sync.RWMutex
@@ -7952,7 +8467,11 @@ type GoRedisClientMock struct {
 	lockBitField                     sync.RWMutex
 	lockBitFieldRO                   sync.RWMutex
 	lockBitOpAnd                     sync.RWMutex
+	lockBitOpAndOr                   sync.RWMutex
+	lockBitOpDiff                    sync.RWMutex
+	lockBitOpDiff1                   sync.RWMutex
 	lockBitOpNot                     sync.RWMutex
+	lockBitOpOne                     sync.RWMutex
 	lockBitOpOr                      sync.RWMutex
 	lockBitOpXor                     sync.RWMutex
 	lockBitPos                       sync.RWMutex
@@ -7986,6 +8505,7 @@ type GoRedisClientMock struct {
 	lockClientKill                   sync.RWMutex
 	lockClientKillByFilter           sync.RWMutex
 	lockClientList                   sync.RWMutex
+	lockClientMaintNotifications     sync.RWMutex
 	lockClientPause                  sync.RWMutex
 	lockClientUnblock                sync.RWMutex
 	lockClientUnblockWithError       sync.RWMutex
@@ -8028,6 +8548,8 @@ type GoRedisClientMock struct {
 	lockDecr                         sync.RWMutex
 	lockDecrBy                       sync.RWMutex
 	lockDel                          sync.RWMutex
+	lockDelExArgs                    sync.RWMutex
+	lockDigest                       sync.RWMutex
 	lockDo                           sync.RWMutex
 	lockDump                         sync.RWMutex
 	lockEcho                         sync.RWMutex
@@ -8064,6 +8586,8 @@ type GoRedisClientMock struct {
 	lockFTDropIndexWithArgs          sync.RWMutex
 	lockFTExplain                    sync.RWMutex
 	lockFTExplainWithArgs            sync.RWMutex
+	lockFTHybrid                     sync.RWMutex
+	lockFTHybridWithArgs             sync.RWMutex
 	lockFTInfo                       sync.RWMutex
 	lockFTSearch                     sync.RWMutex
 	lockFTSearchWithArgs             sync.RWMutex
@@ -8192,8 +8716,11 @@ type GoRedisClientMock struct {
 	lockLSet                         sync.RWMutex
 	lockLTrim                        sync.RWMutex
 	lockLastSave                     sync.RWMutex
+	lockLatency                      sync.RWMutex
+	lockLatencyReset                 sync.RWMutex
 	lockMGet                         sync.RWMutex
 	lockMSet                         sync.RWMutex
+	lockMSetEX                       sync.RWMutex
 	lockMSetNX                       sync.RWMutex
 	lockMemoryUsage                  sync.RWMutex
 	lockMigrate                      sync.RWMutex
@@ -8269,6 +8796,14 @@ type GoRedisClientMock struct {
 	lockSetArgs                      sync.RWMutex
 	lockSetBit                       sync.RWMutex
 	lockSetEx                        sync.RWMutex
+	lockSetIFDEQ                     sync.RWMutex
+	lockSetIFDEQGet                  sync.RWMutex
+	lockSetIFDNE                     sync.RWMutex
+	lockSetIFDNEGet                  sync.RWMutex
+	lockSetIFEQ                      sync.RWMutex
+	lockSetIFEQGet                   sync.RWMutex
+	lockSetIFNE                      sync.RWMutex
+	lockSetIFNEGet                   sync.RWMutex
 	lockSetNX                        sync.RWMutex
 	lockSetRange                     sync.RWMutex
 	lockSetXX                        sync.RWMutex
@@ -8277,6 +8812,8 @@ type GoRedisClientMock struct {
 	lockShutdownSave                 sync.RWMutex
 	lockSlaveOf                      sync.RWMutex
 	lockSlowLogGet                   sync.RWMutex
+	lockSlowLogLen                   sync.RWMutex
+	lockSlowLogReset                 sync.RWMutex
 	lockSort                         sync.RWMutex
 	lockSortInterfaces               sync.RWMutex
 	lockSortRO                       sync.RWMutex
@@ -8355,6 +8892,7 @@ type GoRedisClientMock struct {
 	lockVLinksWithScores             sync.RWMutex
 	lockVRandMember                  sync.RWMutex
 	lockVRandMemberCount             sync.RWMutex
+	lockVRange                       sync.RWMutex
 	lockVRem                         sync.RWMutex
 	lockVSetAttr                     sync.RWMutex
 	lockVSim                         sync.RWMutex
@@ -8363,12 +8901,14 @@ type GoRedisClientMock struct {
 	lockVSimWithScores               sync.RWMutex
 	lockWatch                        sync.RWMutex
 	lockXAck                         sync.RWMutex
+	lockXAckDel                      sync.RWMutex
 	lockXAdd                         sync.RWMutex
 	lockXAutoClaim                   sync.RWMutex
 	lockXAutoClaimJustID             sync.RWMutex
 	lockXClaim                       sync.RWMutex
 	lockXClaimJustID                 sync.RWMutex
 	lockXDel                         sync.RWMutex
+	lockXDelEx                       sync.RWMutex
 	lockXGroupCreate                 sync.RWMutex
 	lockXGroupCreateConsumer         sync.RWMutex
 	lockXGroupCreateMkStream         sync.RWMutex
@@ -8391,8 +8931,12 @@ type GoRedisClientMock struct {
 	lockXRevRangeN                   sync.RWMutex
 	lockXTrimMaxLen                  sync.RWMutex
 	lockXTrimMaxLenApprox            sync.RWMutex
+	lockXTrimMaxLenApproxMode        sync.RWMutex
+	lockXTrimMaxLenMode              sync.RWMutex
 	lockXTrimMinID                   sync.RWMutex
 	lockXTrimMinIDApprox             sync.RWMutex
+	lockXTrimMinIDApproxMode         sync.RWMutex
+	lockXTrimMinIDMode               sync.RWMutex
 	lockZAdd                         sync.RWMutex
 	lockZAddArgs                     sync.RWMutex
 	lockZAddArgsIncr                 sync.RWMutex
@@ -8589,6 +9133,42 @@ func (mock *GoRedisClientMock) ACLDryRunCalls() []struct {
 	return calls
 }
 
+// ACLGenPass calls ACLGenPassFunc.
+func (mock *GoRedisClientMock) ACLGenPass(ctx context.Context, bit int) *redis.StringCmd {
+	if mock.ACLGenPassFunc == nil {
+		panic("GoRedisClientMock.ACLGenPassFunc: method is nil but GoRedisClient.ACLGenPass was just called")
+	}
+	callInfo := struct {
+		Ctx context.Context
+		Bit int
+	}{
+		Ctx: ctx,
+		Bit: bit,
+	}
+	mock.lockACLGenPass.Lock()
+	mock.calls.ACLGenPass = append(mock.calls.ACLGenPass, callInfo)
+	mock.lockACLGenPass.Unlock()
+	return mock.ACLGenPassFunc(ctx, bit)
+}
+
+// ACLGenPassCalls gets all the calls that were made to ACLGenPass.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.ACLGenPassCalls())
+func (mock *GoRedisClientMock) ACLGenPassCalls() []struct {
+	Ctx context.Context
+	Bit int
+} {
+	var calls []struct {
+		Ctx context.Context
+		Bit int
+	}
+	mock.lockACLGenPass.RLock()
+	calls = mock.calls.ACLGenPass
+	mock.lockACLGenPass.RUnlock()
+	return calls
+}
+
 // ACLList calls ACLListFunc.
 func (mock *GoRedisClientMock) ACLList(ctx context.Context) *redis.StringSliceCmd {
 	if mock.ACLListFunc == nil {
@@ -8726,6 +9306,70 @@ func (mock *GoRedisClientMock) ACLSetUserCalls() []struct {
 	mock.lockACLSetUser.RLock()
 	calls = mock.calls.ACLSetUser
 	mock.lockACLSetUser.RUnlock()
+	return calls
+}
+
+// ACLUsers calls ACLUsersFunc.
+func (mock *GoRedisClientMock) ACLUsers(ctx context.Context) *redis.StringSliceCmd {
+	if mock.ACLUsersFunc == nil {
+		panic("GoRedisClientMock.ACLUsersFunc: method is nil but GoRedisClient.ACLUsers was just called")
+	}
+	callInfo := struct {
+		Ctx context.Context
+	}{
+		Ctx: ctx,
+	}
+	mock.lockACLUsers.Lock()
+	mock.calls.ACLUsers = append(mock.calls.ACLUsers, callInfo)
+	mock.lockACLUsers.Unlock()
+	return mock.ACLUsersFunc(ctx)
+}
+
+// ACLUsersCalls gets all the calls that were made to ACLUsers.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.ACLUsersCalls())
+func (mock *GoRedisClientMock) ACLUsersCalls() []struct {
+	Ctx context.Context
+} {
+	var calls []struct {
+		Ctx context.Context
+	}
+	mock.lockACLUsers.RLock()
+	calls = mock.calls.ACLUsers
+	mock.lockACLUsers.RUnlock()
+	return calls
+}
+
+// ACLWhoAmI calls ACLWhoAmIFunc.
+func (mock *GoRedisClientMock) ACLWhoAmI(ctx context.Context) *redis.StringCmd {
+	if mock.ACLWhoAmIFunc == nil {
+		panic("GoRedisClientMock.ACLWhoAmIFunc: method is nil but GoRedisClient.ACLWhoAmI was just called")
+	}
+	callInfo := struct {
+		Ctx context.Context
+	}{
+		Ctx: ctx,
+	}
+	mock.lockACLWhoAmI.Lock()
+	mock.calls.ACLWhoAmI = append(mock.calls.ACLWhoAmI, callInfo)
+	mock.lockACLWhoAmI.Unlock()
+	return mock.ACLWhoAmIFunc(ctx)
+}
+
+// ACLWhoAmICalls gets all the calls that were made to ACLWhoAmI.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.ACLWhoAmICalls())
+func (mock *GoRedisClientMock) ACLWhoAmICalls() []struct {
+	Ctx context.Context
+} {
+	var calls []struct {
+		Ctx context.Context
+	}
+	mock.lockACLWhoAmI.RLock()
+	calls = mock.calls.ACLWhoAmI
+	mock.lockACLWhoAmI.RUnlock()
 	return calls
 }
 
@@ -10133,6 +10777,126 @@ func (mock *GoRedisClientMock) BitOpAndCalls() []struct {
 	return calls
 }
 
+// BitOpAndOr calls BitOpAndOrFunc.
+func (mock *GoRedisClientMock) BitOpAndOr(ctx context.Context, destKey string, keys ...string) *redis.IntCmd {
+	if mock.BitOpAndOrFunc == nil {
+		panic("GoRedisClientMock.BitOpAndOrFunc: method is nil but GoRedisClient.BitOpAndOr was just called")
+	}
+	callInfo := struct {
+		Ctx     context.Context
+		DestKey string
+		Keys    []string
+	}{
+		Ctx:     ctx,
+		DestKey: destKey,
+		Keys:    keys,
+	}
+	mock.lockBitOpAndOr.Lock()
+	mock.calls.BitOpAndOr = append(mock.calls.BitOpAndOr, callInfo)
+	mock.lockBitOpAndOr.Unlock()
+	return mock.BitOpAndOrFunc(ctx, destKey, keys...)
+}
+
+// BitOpAndOrCalls gets all the calls that were made to BitOpAndOr.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.BitOpAndOrCalls())
+func (mock *GoRedisClientMock) BitOpAndOrCalls() []struct {
+	Ctx     context.Context
+	DestKey string
+	Keys    []string
+} {
+	var calls []struct {
+		Ctx     context.Context
+		DestKey string
+		Keys    []string
+	}
+	mock.lockBitOpAndOr.RLock()
+	calls = mock.calls.BitOpAndOr
+	mock.lockBitOpAndOr.RUnlock()
+	return calls
+}
+
+// BitOpDiff calls BitOpDiffFunc.
+func (mock *GoRedisClientMock) BitOpDiff(ctx context.Context, destKey string, keys ...string) *redis.IntCmd {
+	if mock.BitOpDiffFunc == nil {
+		panic("GoRedisClientMock.BitOpDiffFunc: method is nil but GoRedisClient.BitOpDiff was just called")
+	}
+	callInfo := struct {
+		Ctx     context.Context
+		DestKey string
+		Keys    []string
+	}{
+		Ctx:     ctx,
+		DestKey: destKey,
+		Keys:    keys,
+	}
+	mock.lockBitOpDiff.Lock()
+	mock.calls.BitOpDiff = append(mock.calls.BitOpDiff, callInfo)
+	mock.lockBitOpDiff.Unlock()
+	return mock.BitOpDiffFunc(ctx, destKey, keys...)
+}
+
+// BitOpDiffCalls gets all the calls that were made to BitOpDiff.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.BitOpDiffCalls())
+func (mock *GoRedisClientMock) BitOpDiffCalls() []struct {
+	Ctx     context.Context
+	DestKey string
+	Keys    []string
+} {
+	var calls []struct {
+		Ctx     context.Context
+		DestKey string
+		Keys    []string
+	}
+	mock.lockBitOpDiff.RLock()
+	calls = mock.calls.BitOpDiff
+	mock.lockBitOpDiff.RUnlock()
+	return calls
+}
+
+// BitOpDiff1 calls BitOpDiff1Func.
+func (mock *GoRedisClientMock) BitOpDiff1(ctx context.Context, destKey string, keys ...string) *redis.IntCmd {
+	if mock.BitOpDiff1Func == nil {
+		panic("GoRedisClientMock.BitOpDiff1Func: method is nil but GoRedisClient.BitOpDiff1 was just called")
+	}
+	callInfo := struct {
+		Ctx     context.Context
+		DestKey string
+		Keys    []string
+	}{
+		Ctx:     ctx,
+		DestKey: destKey,
+		Keys:    keys,
+	}
+	mock.lockBitOpDiff1.Lock()
+	mock.calls.BitOpDiff1 = append(mock.calls.BitOpDiff1, callInfo)
+	mock.lockBitOpDiff1.Unlock()
+	return mock.BitOpDiff1Func(ctx, destKey, keys...)
+}
+
+// BitOpDiff1Calls gets all the calls that were made to BitOpDiff1.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.BitOpDiff1Calls())
+func (mock *GoRedisClientMock) BitOpDiff1Calls() []struct {
+	Ctx     context.Context
+	DestKey string
+	Keys    []string
+} {
+	var calls []struct {
+		Ctx     context.Context
+		DestKey string
+		Keys    []string
+	}
+	mock.lockBitOpDiff1.RLock()
+	calls = mock.calls.BitOpDiff1
+	mock.lockBitOpDiff1.RUnlock()
+	return calls
+}
+
 // BitOpNot calls BitOpNotFunc.
 func (mock *GoRedisClientMock) BitOpNot(ctx context.Context, destKey string, key string) *redis.IntCmd {
 	if mock.BitOpNotFunc == nil {
@@ -10170,6 +10934,46 @@ func (mock *GoRedisClientMock) BitOpNotCalls() []struct {
 	mock.lockBitOpNot.RLock()
 	calls = mock.calls.BitOpNot
 	mock.lockBitOpNot.RUnlock()
+	return calls
+}
+
+// BitOpOne calls BitOpOneFunc.
+func (mock *GoRedisClientMock) BitOpOne(ctx context.Context, destKey string, keys ...string) *redis.IntCmd {
+	if mock.BitOpOneFunc == nil {
+		panic("GoRedisClientMock.BitOpOneFunc: method is nil but GoRedisClient.BitOpOne was just called")
+	}
+	callInfo := struct {
+		Ctx     context.Context
+		DestKey string
+		Keys    []string
+	}{
+		Ctx:     ctx,
+		DestKey: destKey,
+		Keys:    keys,
+	}
+	mock.lockBitOpOne.Lock()
+	mock.calls.BitOpOne = append(mock.calls.BitOpOne, callInfo)
+	mock.lockBitOpOne.Unlock()
+	return mock.BitOpOneFunc(ctx, destKey, keys...)
+}
+
+// BitOpOneCalls gets all the calls that were made to BitOpOne.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.BitOpOneCalls())
+func (mock *GoRedisClientMock) BitOpOneCalls() []struct {
+	Ctx     context.Context
+	DestKey string
+	Keys    []string
+} {
+	var calls []struct {
+		Ctx     context.Context
+		DestKey string
+		Keys    []string
+	}
+	mock.lockBitOpOne.RLock()
+	calls = mock.calls.BitOpOne
+	mock.lockBitOpOne.RUnlock()
 	return calls
 }
 
@@ -11490,6 +12294,46 @@ func (mock *GoRedisClientMock) ClientListCalls() []struct {
 	mock.lockClientList.RLock()
 	calls = mock.calls.ClientList
 	mock.lockClientList.RUnlock()
+	return calls
+}
+
+// ClientMaintNotifications calls ClientMaintNotificationsFunc.
+func (mock *GoRedisClientMock) ClientMaintNotifications(ctx context.Context, enabled bool, endpointType string) *redis.StatusCmd {
+	if mock.ClientMaintNotificationsFunc == nil {
+		panic("GoRedisClientMock.ClientMaintNotificationsFunc: method is nil but GoRedisClient.ClientMaintNotifications was just called")
+	}
+	callInfo := struct {
+		Ctx          context.Context
+		Enabled      bool
+		EndpointType string
+	}{
+		Ctx:          ctx,
+		Enabled:      enabled,
+		EndpointType: endpointType,
+	}
+	mock.lockClientMaintNotifications.Lock()
+	mock.calls.ClientMaintNotifications = append(mock.calls.ClientMaintNotifications, callInfo)
+	mock.lockClientMaintNotifications.Unlock()
+	return mock.ClientMaintNotificationsFunc(ctx, enabled, endpointType)
+}
+
+// ClientMaintNotificationsCalls gets all the calls that were made to ClientMaintNotifications.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.ClientMaintNotificationsCalls())
+func (mock *GoRedisClientMock) ClientMaintNotificationsCalls() []struct {
+	Ctx          context.Context
+	Enabled      bool
+	EndpointType string
+} {
+	var calls []struct {
+		Ctx          context.Context
+		Enabled      bool
+		EndpointType string
+	}
+	mock.lockClientMaintNotifications.RLock()
+	calls = mock.calls.ClientMaintNotifications
+	mock.lockClientMaintNotifications.RUnlock()
 	return calls
 }
 
@@ -12968,6 +13812,82 @@ func (mock *GoRedisClientMock) DelCalls() []struct {
 	return calls
 }
 
+// DelExArgs calls DelExArgsFunc.
+func (mock *GoRedisClientMock) DelExArgs(ctx context.Context, key string, a redis.DelExArgs) *redis.IntCmd {
+	if mock.DelExArgsFunc == nil {
+		panic("GoRedisClientMock.DelExArgsFunc: method is nil but GoRedisClient.DelExArgs was just called")
+	}
+	callInfo := struct {
+		Ctx context.Context
+		Key string
+		A   redis.DelExArgs
+	}{
+		Ctx: ctx,
+		Key: key,
+		A:   a,
+	}
+	mock.lockDelExArgs.Lock()
+	mock.calls.DelExArgs = append(mock.calls.DelExArgs, callInfo)
+	mock.lockDelExArgs.Unlock()
+	return mock.DelExArgsFunc(ctx, key, a)
+}
+
+// DelExArgsCalls gets all the calls that were made to DelExArgs.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.DelExArgsCalls())
+func (mock *GoRedisClientMock) DelExArgsCalls() []struct {
+	Ctx context.Context
+	Key string
+	A   redis.DelExArgs
+} {
+	var calls []struct {
+		Ctx context.Context
+		Key string
+		A   redis.DelExArgs
+	}
+	mock.lockDelExArgs.RLock()
+	calls = mock.calls.DelExArgs
+	mock.lockDelExArgs.RUnlock()
+	return calls
+}
+
+// Digest calls DigestFunc.
+func (mock *GoRedisClientMock) Digest(ctx context.Context, key string) *redis.DigestCmd {
+	if mock.DigestFunc == nil {
+		panic("GoRedisClientMock.DigestFunc: method is nil but GoRedisClient.Digest was just called")
+	}
+	callInfo := struct {
+		Ctx context.Context
+		Key string
+	}{
+		Ctx: ctx,
+		Key: key,
+	}
+	mock.lockDigest.Lock()
+	mock.calls.Digest = append(mock.calls.Digest, callInfo)
+	mock.lockDigest.Unlock()
+	return mock.DigestFunc(ctx, key)
+}
+
+// DigestCalls gets all the calls that were made to Digest.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.DigestCalls())
+func (mock *GoRedisClientMock) DigestCalls() []struct {
+	Ctx context.Context
+	Key string
+} {
+	var calls []struct {
+		Ctx context.Context
+		Key string
+	}
+	mock.lockDigest.RLock()
+	calls = mock.calls.Digest
+	mock.lockDigest.RUnlock()
+	return calls
+}
+
 // Do calls DoFunc.
 func (mock *GoRedisClientMock) Do(ctx context.Context, args ...interface{}) *redis.Cmd {
 	if mock.DoFunc == nil {
@@ -14417,6 +15337,94 @@ func (mock *GoRedisClientMock) FTExplainWithArgsCalls() []struct {
 	mock.lockFTExplainWithArgs.RLock()
 	calls = mock.calls.FTExplainWithArgs
 	mock.lockFTExplainWithArgs.RUnlock()
+	return calls
+}
+
+// FTHybrid calls FTHybridFunc.
+func (mock *GoRedisClientMock) FTHybrid(ctx context.Context, index string, searchExpr string, vectorField string, vectorData redis.Vector) *redis.FTHybridCmd {
+	if mock.FTHybridFunc == nil {
+		panic("GoRedisClientMock.FTHybridFunc: method is nil but GoRedisClient.FTHybrid was just called")
+	}
+	callInfo := struct {
+		Ctx         context.Context
+		Index       string
+		SearchExpr  string
+		VectorField string
+		VectorData  redis.Vector
+	}{
+		Ctx:         ctx,
+		Index:       index,
+		SearchExpr:  searchExpr,
+		VectorField: vectorField,
+		VectorData:  vectorData,
+	}
+	mock.lockFTHybrid.Lock()
+	mock.calls.FTHybrid = append(mock.calls.FTHybrid, callInfo)
+	mock.lockFTHybrid.Unlock()
+	return mock.FTHybridFunc(ctx, index, searchExpr, vectorField, vectorData)
+}
+
+// FTHybridCalls gets all the calls that were made to FTHybrid.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.FTHybridCalls())
+func (mock *GoRedisClientMock) FTHybridCalls() []struct {
+	Ctx         context.Context
+	Index       string
+	SearchExpr  string
+	VectorField string
+	VectorData  redis.Vector
+} {
+	var calls []struct {
+		Ctx         context.Context
+		Index       string
+		SearchExpr  string
+		VectorField string
+		VectorData  redis.Vector
+	}
+	mock.lockFTHybrid.RLock()
+	calls = mock.calls.FTHybrid
+	mock.lockFTHybrid.RUnlock()
+	return calls
+}
+
+// FTHybridWithArgs calls FTHybridWithArgsFunc.
+func (mock *GoRedisClientMock) FTHybridWithArgs(ctx context.Context, index string, options *redis.FTHybridOptions) *redis.FTHybridCmd {
+	if mock.FTHybridWithArgsFunc == nil {
+		panic("GoRedisClientMock.FTHybridWithArgsFunc: method is nil but GoRedisClient.FTHybridWithArgs was just called")
+	}
+	callInfo := struct {
+		Ctx     context.Context
+		Index   string
+		Options *redis.FTHybridOptions
+	}{
+		Ctx:     ctx,
+		Index:   index,
+		Options: options,
+	}
+	mock.lockFTHybridWithArgs.Lock()
+	mock.calls.FTHybridWithArgs = append(mock.calls.FTHybridWithArgs, callInfo)
+	mock.lockFTHybridWithArgs.Unlock()
+	return mock.FTHybridWithArgsFunc(ctx, index, options)
+}
+
+// FTHybridWithArgsCalls gets all the calls that were made to FTHybridWithArgs.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.FTHybridWithArgsCalls())
+func (mock *GoRedisClientMock) FTHybridWithArgsCalls() []struct {
+	Ctx     context.Context
+	Index   string
+	Options *redis.FTHybridOptions
+} {
+	var calls []struct {
+		Ctx     context.Context
+		Index   string
+		Options *redis.FTHybridOptions
+	}
+	mock.lockFTHybridWithArgs.RLock()
+	calls = mock.calls.FTHybridWithArgs
+	mock.lockFTHybridWithArgs.RUnlock()
 	return calls
 }
 
@@ -19628,6 +20636,74 @@ func (mock *GoRedisClientMock) LastSaveCalls() []struct {
 	return calls
 }
 
+// Latency calls LatencyFunc.
+func (mock *GoRedisClientMock) Latency(ctx context.Context) *redis.LatencyCmd {
+	if mock.LatencyFunc == nil {
+		panic("GoRedisClientMock.LatencyFunc: method is nil but GoRedisClient.Latency was just called")
+	}
+	callInfo := struct {
+		Ctx context.Context
+	}{
+		Ctx: ctx,
+	}
+	mock.lockLatency.Lock()
+	mock.calls.Latency = append(mock.calls.Latency, callInfo)
+	mock.lockLatency.Unlock()
+	return mock.LatencyFunc(ctx)
+}
+
+// LatencyCalls gets all the calls that were made to Latency.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.LatencyCalls())
+func (mock *GoRedisClientMock) LatencyCalls() []struct {
+	Ctx context.Context
+} {
+	var calls []struct {
+		Ctx context.Context
+	}
+	mock.lockLatency.RLock()
+	calls = mock.calls.Latency
+	mock.lockLatency.RUnlock()
+	return calls
+}
+
+// LatencyReset calls LatencyResetFunc.
+func (mock *GoRedisClientMock) LatencyReset(ctx context.Context, events ...interface{}) *redis.StatusCmd {
+	if mock.LatencyResetFunc == nil {
+		panic("GoRedisClientMock.LatencyResetFunc: method is nil but GoRedisClient.LatencyReset was just called")
+	}
+	callInfo := struct {
+		Ctx    context.Context
+		Events []interface{}
+	}{
+		Ctx:    ctx,
+		Events: events,
+	}
+	mock.lockLatencyReset.Lock()
+	mock.calls.LatencyReset = append(mock.calls.LatencyReset, callInfo)
+	mock.lockLatencyReset.Unlock()
+	return mock.LatencyResetFunc(ctx, events...)
+}
+
+// LatencyResetCalls gets all the calls that were made to LatencyReset.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.LatencyResetCalls())
+func (mock *GoRedisClientMock) LatencyResetCalls() []struct {
+	Ctx    context.Context
+	Events []interface{}
+} {
+	var calls []struct {
+		Ctx    context.Context
+		Events []interface{}
+	}
+	mock.lockLatencyReset.RLock()
+	calls = mock.calls.LatencyReset
+	mock.lockLatencyReset.RUnlock()
+	return calls
+}
+
 // MGet calls MGetFunc.
 func (mock *GoRedisClientMock) MGet(ctx context.Context, keys ...string) *redis.SliceCmd {
 	if mock.MGetFunc == nil {
@@ -19697,6 +20773,46 @@ func (mock *GoRedisClientMock) MSetCalls() []struct {
 	mock.lockMSet.RLock()
 	calls = mock.calls.MSet
 	mock.lockMSet.RUnlock()
+	return calls
+}
+
+// MSetEX calls MSetEXFunc.
+func (mock *GoRedisClientMock) MSetEX(ctx context.Context, args redis.MSetEXArgs, values ...interface{}) *redis.IntCmd {
+	if mock.MSetEXFunc == nil {
+		panic("GoRedisClientMock.MSetEXFunc: method is nil but GoRedisClient.MSetEX was just called")
+	}
+	callInfo := struct {
+		Ctx    context.Context
+		Args   redis.MSetEXArgs
+		Values []interface{}
+	}{
+		Ctx:    ctx,
+		Args:   args,
+		Values: values,
+	}
+	mock.lockMSetEX.Lock()
+	mock.calls.MSetEX = append(mock.calls.MSetEX, callInfo)
+	mock.lockMSetEX.Unlock()
+	return mock.MSetEXFunc(ctx, args, values...)
+}
+
+// MSetEXCalls gets all the calls that were made to MSetEX.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.MSetEXCalls())
+func (mock *GoRedisClientMock) MSetEXCalls() []struct {
+	Ctx    context.Context
+	Args   redis.MSetEXArgs
+	Values []interface{}
+} {
+	var calls []struct {
+		Ctx    context.Context
+		Args   redis.MSetEXArgs
+		Values []interface{}
+	}
+	mock.lockMSetEX.RLock()
+	calls = mock.calls.MSetEX
+	mock.lockMSetEX.RUnlock()
 	return calls
 }
 
@@ -22546,6 +23662,390 @@ func (mock *GoRedisClientMock) SetExCalls() []struct {
 	return calls
 }
 
+// SetIFDEQ calls SetIFDEQFunc.
+func (mock *GoRedisClientMock) SetIFDEQ(ctx context.Context, key string, value interface{}, matchDigest uint64, expiration time.Duration) *redis.StatusCmd {
+	if mock.SetIFDEQFunc == nil {
+		panic("GoRedisClientMock.SetIFDEQFunc: method is nil but GoRedisClient.SetIFDEQ was just called")
+	}
+	callInfo := struct {
+		Ctx         context.Context
+		Key         string
+		Value       interface{}
+		MatchDigest uint64
+		Expiration  time.Duration
+	}{
+		Ctx:         ctx,
+		Key:         key,
+		Value:       value,
+		MatchDigest: matchDigest,
+		Expiration:  expiration,
+	}
+	mock.lockSetIFDEQ.Lock()
+	mock.calls.SetIFDEQ = append(mock.calls.SetIFDEQ, callInfo)
+	mock.lockSetIFDEQ.Unlock()
+	return mock.SetIFDEQFunc(ctx, key, value, matchDigest, expiration)
+}
+
+// SetIFDEQCalls gets all the calls that were made to SetIFDEQ.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.SetIFDEQCalls())
+func (mock *GoRedisClientMock) SetIFDEQCalls() []struct {
+	Ctx         context.Context
+	Key         string
+	Value       interface{}
+	MatchDigest uint64
+	Expiration  time.Duration
+} {
+	var calls []struct {
+		Ctx         context.Context
+		Key         string
+		Value       interface{}
+		MatchDigest uint64
+		Expiration  time.Duration
+	}
+	mock.lockSetIFDEQ.RLock()
+	calls = mock.calls.SetIFDEQ
+	mock.lockSetIFDEQ.RUnlock()
+	return calls
+}
+
+// SetIFDEQGet calls SetIFDEQGetFunc.
+func (mock *GoRedisClientMock) SetIFDEQGet(ctx context.Context, key string, value interface{}, matchDigest uint64, expiration time.Duration) *redis.StringCmd {
+	if mock.SetIFDEQGetFunc == nil {
+		panic("GoRedisClientMock.SetIFDEQGetFunc: method is nil but GoRedisClient.SetIFDEQGet was just called")
+	}
+	callInfo := struct {
+		Ctx         context.Context
+		Key         string
+		Value       interface{}
+		MatchDigest uint64
+		Expiration  time.Duration
+	}{
+		Ctx:         ctx,
+		Key:         key,
+		Value:       value,
+		MatchDigest: matchDigest,
+		Expiration:  expiration,
+	}
+	mock.lockSetIFDEQGet.Lock()
+	mock.calls.SetIFDEQGet = append(mock.calls.SetIFDEQGet, callInfo)
+	mock.lockSetIFDEQGet.Unlock()
+	return mock.SetIFDEQGetFunc(ctx, key, value, matchDigest, expiration)
+}
+
+// SetIFDEQGetCalls gets all the calls that were made to SetIFDEQGet.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.SetIFDEQGetCalls())
+func (mock *GoRedisClientMock) SetIFDEQGetCalls() []struct {
+	Ctx         context.Context
+	Key         string
+	Value       interface{}
+	MatchDigest uint64
+	Expiration  time.Duration
+} {
+	var calls []struct {
+		Ctx         context.Context
+		Key         string
+		Value       interface{}
+		MatchDigest uint64
+		Expiration  time.Duration
+	}
+	mock.lockSetIFDEQGet.RLock()
+	calls = mock.calls.SetIFDEQGet
+	mock.lockSetIFDEQGet.RUnlock()
+	return calls
+}
+
+// SetIFDNE calls SetIFDNEFunc.
+func (mock *GoRedisClientMock) SetIFDNE(ctx context.Context, key string, value interface{}, matchDigest uint64, expiration time.Duration) *redis.StatusCmd {
+	if mock.SetIFDNEFunc == nil {
+		panic("GoRedisClientMock.SetIFDNEFunc: method is nil but GoRedisClient.SetIFDNE was just called")
+	}
+	callInfo := struct {
+		Ctx         context.Context
+		Key         string
+		Value       interface{}
+		MatchDigest uint64
+		Expiration  time.Duration
+	}{
+		Ctx:         ctx,
+		Key:         key,
+		Value:       value,
+		MatchDigest: matchDigest,
+		Expiration:  expiration,
+	}
+	mock.lockSetIFDNE.Lock()
+	mock.calls.SetIFDNE = append(mock.calls.SetIFDNE, callInfo)
+	mock.lockSetIFDNE.Unlock()
+	return mock.SetIFDNEFunc(ctx, key, value, matchDigest, expiration)
+}
+
+// SetIFDNECalls gets all the calls that were made to SetIFDNE.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.SetIFDNECalls())
+func (mock *GoRedisClientMock) SetIFDNECalls() []struct {
+	Ctx         context.Context
+	Key         string
+	Value       interface{}
+	MatchDigest uint64
+	Expiration  time.Duration
+} {
+	var calls []struct {
+		Ctx         context.Context
+		Key         string
+		Value       interface{}
+		MatchDigest uint64
+		Expiration  time.Duration
+	}
+	mock.lockSetIFDNE.RLock()
+	calls = mock.calls.SetIFDNE
+	mock.lockSetIFDNE.RUnlock()
+	return calls
+}
+
+// SetIFDNEGet calls SetIFDNEGetFunc.
+func (mock *GoRedisClientMock) SetIFDNEGet(ctx context.Context, key string, value interface{}, matchDigest uint64, expiration time.Duration) *redis.StringCmd {
+	if mock.SetIFDNEGetFunc == nil {
+		panic("GoRedisClientMock.SetIFDNEGetFunc: method is nil but GoRedisClient.SetIFDNEGet was just called")
+	}
+	callInfo := struct {
+		Ctx         context.Context
+		Key         string
+		Value       interface{}
+		MatchDigest uint64
+		Expiration  time.Duration
+	}{
+		Ctx:         ctx,
+		Key:         key,
+		Value:       value,
+		MatchDigest: matchDigest,
+		Expiration:  expiration,
+	}
+	mock.lockSetIFDNEGet.Lock()
+	mock.calls.SetIFDNEGet = append(mock.calls.SetIFDNEGet, callInfo)
+	mock.lockSetIFDNEGet.Unlock()
+	return mock.SetIFDNEGetFunc(ctx, key, value, matchDigest, expiration)
+}
+
+// SetIFDNEGetCalls gets all the calls that were made to SetIFDNEGet.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.SetIFDNEGetCalls())
+func (mock *GoRedisClientMock) SetIFDNEGetCalls() []struct {
+	Ctx         context.Context
+	Key         string
+	Value       interface{}
+	MatchDigest uint64
+	Expiration  time.Duration
+} {
+	var calls []struct {
+		Ctx         context.Context
+		Key         string
+		Value       interface{}
+		MatchDigest uint64
+		Expiration  time.Duration
+	}
+	mock.lockSetIFDNEGet.RLock()
+	calls = mock.calls.SetIFDNEGet
+	mock.lockSetIFDNEGet.RUnlock()
+	return calls
+}
+
+// SetIFEQ calls SetIFEQFunc.
+func (mock *GoRedisClientMock) SetIFEQ(ctx context.Context, key string, value interface{}, matchValue interface{}, expiration time.Duration) *redis.StatusCmd {
+	if mock.SetIFEQFunc == nil {
+		panic("GoRedisClientMock.SetIFEQFunc: method is nil but GoRedisClient.SetIFEQ was just called")
+	}
+	callInfo := struct {
+		Ctx        context.Context
+		Key        string
+		Value      interface{}
+		MatchValue interface{}
+		Expiration time.Duration
+	}{
+		Ctx:        ctx,
+		Key:        key,
+		Value:      value,
+		MatchValue: matchValue,
+		Expiration: expiration,
+	}
+	mock.lockSetIFEQ.Lock()
+	mock.calls.SetIFEQ = append(mock.calls.SetIFEQ, callInfo)
+	mock.lockSetIFEQ.Unlock()
+	return mock.SetIFEQFunc(ctx, key, value, matchValue, expiration)
+}
+
+// SetIFEQCalls gets all the calls that were made to SetIFEQ.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.SetIFEQCalls())
+func (mock *GoRedisClientMock) SetIFEQCalls() []struct {
+	Ctx        context.Context
+	Key        string
+	Value      interface{}
+	MatchValue interface{}
+	Expiration time.Duration
+} {
+	var calls []struct {
+		Ctx        context.Context
+		Key        string
+		Value      interface{}
+		MatchValue interface{}
+		Expiration time.Duration
+	}
+	mock.lockSetIFEQ.RLock()
+	calls = mock.calls.SetIFEQ
+	mock.lockSetIFEQ.RUnlock()
+	return calls
+}
+
+// SetIFEQGet calls SetIFEQGetFunc.
+func (mock *GoRedisClientMock) SetIFEQGet(ctx context.Context, key string, value interface{}, matchValue interface{}, expiration time.Duration) *redis.StringCmd {
+	if mock.SetIFEQGetFunc == nil {
+		panic("GoRedisClientMock.SetIFEQGetFunc: method is nil but GoRedisClient.SetIFEQGet was just called")
+	}
+	callInfo := struct {
+		Ctx        context.Context
+		Key        string
+		Value      interface{}
+		MatchValue interface{}
+		Expiration time.Duration
+	}{
+		Ctx:        ctx,
+		Key:        key,
+		Value:      value,
+		MatchValue: matchValue,
+		Expiration: expiration,
+	}
+	mock.lockSetIFEQGet.Lock()
+	mock.calls.SetIFEQGet = append(mock.calls.SetIFEQGet, callInfo)
+	mock.lockSetIFEQGet.Unlock()
+	return mock.SetIFEQGetFunc(ctx, key, value, matchValue, expiration)
+}
+
+// SetIFEQGetCalls gets all the calls that were made to SetIFEQGet.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.SetIFEQGetCalls())
+func (mock *GoRedisClientMock) SetIFEQGetCalls() []struct {
+	Ctx        context.Context
+	Key        string
+	Value      interface{}
+	MatchValue interface{}
+	Expiration time.Duration
+} {
+	var calls []struct {
+		Ctx        context.Context
+		Key        string
+		Value      interface{}
+		MatchValue interface{}
+		Expiration time.Duration
+	}
+	mock.lockSetIFEQGet.RLock()
+	calls = mock.calls.SetIFEQGet
+	mock.lockSetIFEQGet.RUnlock()
+	return calls
+}
+
+// SetIFNE calls SetIFNEFunc.
+func (mock *GoRedisClientMock) SetIFNE(ctx context.Context, key string, value interface{}, matchValue interface{}, expiration time.Duration) *redis.StatusCmd {
+	if mock.SetIFNEFunc == nil {
+		panic("GoRedisClientMock.SetIFNEFunc: method is nil but GoRedisClient.SetIFNE was just called")
+	}
+	callInfo := struct {
+		Ctx        context.Context
+		Key        string
+		Value      interface{}
+		MatchValue interface{}
+		Expiration time.Duration
+	}{
+		Ctx:        ctx,
+		Key:        key,
+		Value:      value,
+		MatchValue: matchValue,
+		Expiration: expiration,
+	}
+	mock.lockSetIFNE.Lock()
+	mock.calls.SetIFNE = append(mock.calls.SetIFNE, callInfo)
+	mock.lockSetIFNE.Unlock()
+	return mock.SetIFNEFunc(ctx, key, value, matchValue, expiration)
+}
+
+// SetIFNECalls gets all the calls that were made to SetIFNE.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.SetIFNECalls())
+func (mock *GoRedisClientMock) SetIFNECalls() []struct {
+	Ctx        context.Context
+	Key        string
+	Value      interface{}
+	MatchValue interface{}
+	Expiration time.Duration
+} {
+	var calls []struct {
+		Ctx        context.Context
+		Key        string
+		Value      interface{}
+		MatchValue interface{}
+		Expiration time.Duration
+	}
+	mock.lockSetIFNE.RLock()
+	calls = mock.calls.SetIFNE
+	mock.lockSetIFNE.RUnlock()
+	return calls
+}
+
+// SetIFNEGet calls SetIFNEGetFunc.
+func (mock *GoRedisClientMock) SetIFNEGet(ctx context.Context, key string, value interface{}, matchValue interface{}, expiration time.Duration) *redis.StringCmd {
+	if mock.SetIFNEGetFunc == nil {
+		panic("GoRedisClientMock.SetIFNEGetFunc: method is nil but GoRedisClient.SetIFNEGet was just called")
+	}
+	callInfo := struct {
+		Ctx        context.Context
+		Key        string
+		Value      interface{}
+		MatchValue interface{}
+		Expiration time.Duration
+	}{
+		Ctx:        ctx,
+		Key:        key,
+		Value:      value,
+		MatchValue: matchValue,
+		Expiration: expiration,
+	}
+	mock.lockSetIFNEGet.Lock()
+	mock.calls.SetIFNEGet = append(mock.calls.SetIFNEGet, callInfo)
+	mock.lockSetIFNEGet.Unlock()
+	return mock.SetIFNEGetFunc(ctx, key, value, matchValue, expiration)
+}
+
+// SetIFNEGetCalls gets all the calls that were made to SetIFNEGet.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.SetIFNEGetCalls())
+func (mock *GoRedisClientMock) SetIFNEGetCalls() []struct {
+	Ctx        context.Context
+	Key        string
+	Value      interface{}
+	MatchValue interface{}
+	Expiration time.Duration
+} {
+	var calls []struct {
+		Ctx        context.Context
+		Key        string
+		Value      interface{}
+		MatchValue interface{}
+		Expiration time.Duration
+	}
+	mock.lockSetIFNEGet.RLock()
+	calls = mock.calls.SetIFNEGet
+	mock.lockSetIFNEGet.RUnlock()
+	return calls
+}
+
 // SetNX calls SetNXFunc.
 func (mock *GoRedisClientMock) SetNX(ctx context.Context, key string, value interface{}, expiration time.Duration) *redis.BoolCmd {
 	if mock.SetNXFunc == nil {
@@ -22847,6 +24347,70 @@ func (mock *GoRedisClientMock) SlowLogGetCalls() []struct {
 	mock.lockSlowLogGet.RLock()
 	calls = mock.calls.SlowLogGet
 	mock.lockSlowLogGet.RUnlock()
+	return calls
+}
+
+// SlowLogLen calls SlowLogLenFunc.
+func (mock *GoRedisClientMock) SlowLogLen(ctx context.Context) *redis.IntCmd {
+	if mock.SlowLogLenFunc == nil {
+		panic("GoRedisClientMock.SlowLogLenFunc: method is nil but GoRedisClient.SlowLogLen was just called")
+	}
+	callInfo := struct {
+		Ctx context.Context
+	}{
+		Ctx: ctx,
+	}
+	mock.lockSlowLogLen.Lock()
+	mock.calls.SlowLogLen = append(mock.calls.SlowLogLen, callInfo)
+	mock.lockSlowLogLen.Unlock()
+	return mock.SlowLogLenFunc(ctx)
+}
+
+// SlowLogLenCalls gets all the calls that were made to SlowLogLen.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.SlowLogLenCalls())
+func (mock *GoRedisClientMock) SlowLogLenCalls() []struct {
+	Ctx context.Context
+} {
+	var calls []struct {
+		Ctx context.Context
+	}
+	mock.lockSlowLogLen.RLock()
+	calls = mock.calls.SlowLogLen
+	mock.lockSlowLogLen.RUnlock()
+	return calls
+}
+
+// SlowLogReset calls SlowLogResetFunc.
+func (mock *GoRedisClientMock) SlowLogReset(ctx context.Context) *redis.StatusCmd {
+	if mock.SlowLogResetFunc == nil {
+		panic("GoRedisClientMock.SlowLogResetFunc: method is nil but GoRedisClient.SlowLogReset was just called")
+	}
+	callInfo := struct {
+		Ctx context.Context
+	}{
+		Ctx: ctx,
+	}
+	mock.lockSlowLogReset.Lock()
+	mock.calls.SlowLogReset = append(mock.calls.SlowLogReset, callInfo)
+	mock.lockSlowLogReset.Unlock()
+	return mock.SlowLogResetFunc(ctx)
+}
+
+// SlowLogResetCalls gets all the calls that were made to SlowLogReset.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.SlowLogResetCalls())
+func (mock *GoRedisClientMock) SlowLogResetCalls() []struct {
+	Ctx context.Context
+} {
+	var calls []struct {
+		Ctx context.Context
+	}
+	mock.lockSlowLogReset.RLock()
+	calls = mock.calls.SlowLogReset
+	mock.lockSlowLogReset.RUnlock()
 	return calls
 }
 
@@ -25981,6 +27545,54 @@ func (mock *GoRedisClientMock) VRandMemberCountCalls() []struct {
 	return calls
 }
 
+// VRange calls VRangeFunc.
+func (mock *GoRedisClientMock) VRange(ctx context.Context, key string, start string, end string, count int64) *redis.StringSliceCmd {
+	if mock.VRangeFunc == nil {
+		panic("GoRedisClientMock.VRangeFunc: method is nil but GoRedisClient.VRange was just called")
+	}
+	callInfo := struct {
+		Ctx   context.Context
+		Key   string
+		Start string
+		End   string
+		Count int64
+	}{
+		Ctx:   ctx,
+		Key:   key,
+		Start: start,
+		End:   end,
+		Count: count,
+	}
+	mock.lockVRange.Lock()
+	mock.calls.VRange = append(mock.calls.VRange, callInfo)
+	mock.lockVRange.Unlock()
+	return mock.VRangeFunc(ctx, key, start, end, count)
+}
+
+// VRangeCalls gets all the calls that were made to VRange.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.VRangeCalls())
+func (mock *GoRedisClientMock) VRangeCalls() []struct {
+	Ctx   context.Context
+	Key   string
+	Start string
+	End   string
+	Count int64
+} {
+	var calls []struct {
+		Ctx   context.Context
+		Key   string
+		Start string
+		End   string
+		Count int64
+	}
+	mock.lockVRange.RLock()
+	calls = mock.calls.VRange
+	mock.lockVRange.RUnlock()
+	return calls
+}
+
 // VRem calls VRemFunc.
 func (mock *GoRedisClientMock) VRem(ctx context.Context, key string, element string) *redis.BoolCmd {
 	if mock.VRemFunc == nil {
@@ -26317,6 +27929,54 @@ func (mock *GoRedisClientMock) XAckCalls() []struct {
 	return calls
 }
 
+// XAckDel calls XAckDelFunc.
+func (mock *GoRedisClientMock) XAckDel(ctx context.Context, stream string, group string, mode string, ids ...string) *redis.SliceCmd {
+	if mock.XAckDelFunc == nil {
+		panic("GoRedisClientMock.XAckDelFunc: method is nil but GoRedisClient.XAckDel was just called")
+	}
+	callInfo := struct {
+		Ctx    context.Context
+		Stream string
+		Group  string
+		Mode   string
+		Ids    []string
+	}{
+		Ctx:    ctx,
+		Stream: stream,
+		Group:  group,
+		Mode:   mode,
+		Ids:    ids,
+	}
+	mock.lockXAckDel.Lock()
+	mock.calls.XAckDel = append(mock.calls.XAckDel, callInfo)
+	mock.lockXAckDel.Unlock()
+	return mock.XAckDelFunc(ctx, stream, group, mode, ids...)
+}
+
+// XAckDelCalls gets all the calls that were made to XAckDel.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.XAckDelCalls())
+func (mock *GoRedisClientMock) XAckDelCalls() []struct {
+	Ctx    context.Context
+	Stream string
+	Group  string
+	Mode   string
+	Ids    []string
+} {
+	var calls []struct {
+		Ctx    context.Context
+		Stream string
+		Group  string
+		Mode   string
+		Ids    []string
+	}
+	mock.lockXAckDel.RLock()
+	calls = mock.calls.XAckDel
+	mock.lockXAckDel.RUnlock()
+	return calls
+}
+
 // XAdd calls XAddFunc.
 func (mock *GoRedisClientMock) XAdd(ctx context.Context, a *redis.XAddArgs) *redis.StringCmd {
 	if mock.XAddFunc == nil {
@@ -26534,6 +28194,50 @@ func (mock *GoRedisClientMock) XDelCalls() []struct {
 	mock.lockXDel.RLock()
 	calls = mock.calls.XDel
 	mock.lockXDel.RUnlock()
+	return calls
+}
+
+// XDelEx calls XDelExFunc.
+func (mock *GoRedisClientMock) XDelEx(ctx context.Context, stream string, mode string, ids ...string) *redis.SliceCmd {
+	if mock.XDelExFunc == nil {
+		panic("GoRedisClientMock.XDelExFunc: method is nil but GoRedisClient.XDelEx was just called")
+	}
+	callInfo := struct {
+		Ctx    context.Context
+		Stream string
+		Mode   string
+		Ids    []string
+	}{
+		Ctx:    ctx,
+		Stream: stream,
+		Mode:   mode,
+		Ids:    ids,
+	}
+	mock.lockXDelEx.Lock()
+	mock.calls.XDelEx = append(mock.calls.XDelEx, callInfo)
+	mock.lockXDelEx.Unlock()
+	return mock.XDelExFunc(ctx, stream, mode, ids...)
+}
+
+// XDelExCalls gets all the calls that were made to XDelEx.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.XDelExCalls())
+func (mock *GoRedisClientMock) XDelExCalls() []struct {
+	Ctx    context.Context
+	Stream string
+	Mode   string
+	Ids    []string
+} {
+	var calls []struct {
+		Ctx    context.Context
+		Stream string
+		Mode   string
+		Ids    []string
+	}
+	mock.lockXDelEx.RLock()
+	calls = mock.calls.XDelEx
+	mock.lockXDelEx.RUnlock()
 	return calls
 }
 
@@ -27437,6 +29141,98 @@ func (mock *GoRedisClientMock) XTrimMaxLenApproxCalls() []struct {
 	return calls
 }
 
+// XTrimMaxLenApproxMode calls XTrimMaxLenApproxModeFunc.
+func (mock *GoRedisClientMock) XTrimMaxLenApproxMode(ctx context.Context, key string, maxLen int64, limit int64, mode string) *redis.IntCmd {
+	if mock.XTrimMaxLenApproxModeFunc == nil {
+		panic("GoRedisClientMock.XTrimMaxLenApproxModeFunc: method is nil but GoRedisClient.XTrimMaxLenApproxMode was just called")
+	}
+	callInfo := struct {
+		Ctx    context.Context
+		Key    string
+		MaxLen int64
+		Limit  int64
+		Mode   string
+	}{
+		Ctx:    ctx,
+		Key:    key,
+		MaxLen: maxLen,
+		Limit:  limit,
+		Mode:   mode,
+	}
+	mock.lockXTrimMaxLenApproxMode.Lock()
+	mock.calls.XTrimMaxLenApproxMode = append(mock.calls.XTrimMaxLenApproxMode, callInfo)
+	mock.lockXTrimMaxLenApproxMode.Unlock()
+	return mock.XTrimMaxLenApproxModeFunc(ctx, key, maxLen, limit, mode)
+}
+
+// XTrimMaxLenApproxModeCalls gets all the calls that were made to XTrimMaxLenApproxMode.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.XTrimMaxLenApproxModeCalls())
+func (mock *GoRedisClientMock) XTrimMaxLenApproxModeCalls() []struct {
+	Ctx    context.Context
+	Key    string
+	MaxLen int64
+	Limit  int64
+	Mode   string
+} {
+	var calls []struct {
+		Ctx    context.Context
+		Key    string
+		MaxLen int64
+		Limit  int64
+		Mode   string
+	}
+	mock.lockXTrimMaxLenApproxMode.RLock()
+	calls = mock.calls.XTrimMaxLenApproxMode
+	mock.lockXTrimMaxLenApproxMode.RUnlock()
+	return calls
+}
+
+// XTrimMaxLenMode calls XTrimMaxLenModeFunc.
+func (mock *GoRedisClientMock) XTrimMaxLenMode(ctx context.Context, key string, maxLen int64, mode string) *redis.IntCmd {
+	if mock.XTrimMaxLenModeFunc == nil {
+		panic("GoRedisClientMock.XTrimMaxLenModeFunc: method is nil but GoRedisClient.XTrimMaxLenMode was just called")
+	}
+	callInfo := struct {
+		Ctx    context.Context
+		Key    string
+		MaxLen int64
+		Mode   string
+	}{
+		Ctx:    ctx,
+		Key:    key,
+		MaxLen: maxLen,
+		Mode:   mode,
+	}
+	mock.lockXTrimMaxLenMode.Lock()
+	mock.calls.XTrimMaxLenMode = append(mock.calls.XTrimMaxLenMode, callInfo)
+	mock.lockXTrimMaxLenMode.Unlock()
+	return mock.XTrimMaxLenModeFunc(ctx, key, maxLen, mode)
+}
+
+// XTrimMaxLenModeCalls gets all the calls that were made to XTrimMaxLenMode.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.XTrimMaxLenModeCalls())
+func (mock *GoRedisClientMock) XTrimMaxLenModeCalls() []struct {
+	Ctx    context.Context
+	Key    string
+	MaxLen int64
+	Mode   string
+} {
+	var calls []struct {
+		Ctx    context.Context
+		Key    string
+		MaxLen int64
+		Mode   string
+	}
+	mock.lockXTrimMaxLenMode.RLock()
+	calls = mock.calls.XTrimMaxLenMode
+	mock.lockXTrimMaxLenMode.RUnlock()
+	return calls
+}
+
 // XTrimMinID calls XTrimMinIDFunc.
 func (mock *GoRedisClientMock) XTrimMinID(ctx context.Context, key string, minID string) *redis.IntCmd {
 	if mock.XTrimMinIDFunc == nil {
@@ -27518,6 +29314,98 @@ func (mock *GoRedisClientMock) XTrimMinIDApproxCalls() []struct {
 	mock.lockXTrimMinIDApprox.RLock()
 	calls = mock.calls.XTrimMinIDApprox
 	mock.lockXTrimMinIDApprox.RUnlock()
+	return calls
+}
+
+// XTrimMinIDApproxMode calls XTrimMinIDApproxModeFunc.
+func (mock *GoRedisClientMock) XTrimMinIDApproxMode(ctx context.Context, key string, minID string, limit int64, mode string) *redis.IntCmd {
+	if mock.XTrimMinIDApproxModeFunc == nil {
+		panic("GoRedisClientMock.XTrimMinIDApproxModeFunc: method is nil but GoRedisClient.XTrimMinIDApproxMode was just called")
+	}
+	callInfo := struct {
+		Ctx   context.Context
+		Key   string
+		MinID string
+		Limit int64
+		Mode  string
+	}{
+		Ctx:   ctx,
+		Key:   key,
+		MinID: minID,
+		Limit: limit,
+		Mode:  mode,
+	}
+	mock.lockXTrimMinIDApproxMode.Lock()
+	mock.calls.XTrimMinIDApproxMode = append(mock.calls.XTrimMinIDApproxMode, callInfo)
+	mock.lockXTrimMinIDApproxMode.Unlock()
+	return mock.XTrimMinIDApproxModeFunc(ctx, key, minID, limit, mode)
+}
+
+// XTrimMinIDApproxModeCalls gets all the calls that were made to XTrimMinIDApproxMode.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.XTrimMinIDApproxModeCalls())
+func (mock *GoRedisClientMock) XTrimMinIDApproxModeCalls() []struct {
+	Ctx   context.Context
+	Key   string
+	MinID string
+	Limit int64
+	Mode  string
+} {
+	var calls []struct {
+		Ctx   context.Context
+		Key   string
+		MinID string
+		Limit int64
+		Mode  string
+	}
+	mock.lockXTrimMinIDApproxMode.RLock()
+	calls = mock.calls.XTrimMinIDApproxMode
+	mock.lockXTrimMinIDApproxMode.RUnlock()
+	return calls
+}
+
+// XTrimMinIDMode calls XTrimMinIDModeFunc.
+func (mock *GoRedisClientMock) XTrimMinIDMode(ctx context.Context, key string, minID string, mode string) *redis.IntCmd {
+	if mock.XTrimMinIDModeFunc == nil {
+		panic("GoRedisClientMock.XTrimMinIDModeFunc: method is nil but GoRedisClient.XTrimMinIDMode was just called")
+	}
+	callInfo := struct {
+		Ctx   context.Context
+		Key   string
+		MinID string
+		Mode  string
+	}{
+		Ctx:   ctx,
+		Key:   key,
+		MinID: minID,
+		Mode:  mode,
+	}
+	mock.lockXTrimMinIDMode.Lock()
+	mock.calls.XTrimMinIDMode = append(mock.calls.XTrimMinIDMode, callInfo)
+	mock.lockXTrimMinIDMode.Unlock()
+	return mock.XTrimMinIDModeFunc(ctx, key, minID, mode)
+}
+
+// XTrimMinIDModeCalls gets all the calls that were made to XTrimMinIDMode.
+// Check the length with:
+//
+//	len(mockedGoRedisClient.XTrimMinIDModeCalls())
+func (mock *GoRedisClientMock) XTrimMinIDModeCalls() []struct {
+	Ctx   context.Context
+	Key   string
+	MinID string
+	Mode  string
+} {
+	var calls []struct {
+		Ctx   context.Context
+		Key   string
+		MinID string
+		Mode  string
+	}
+	mock.lockXTrimMinIDMode.RLock()
+	calls = mock.calls.XTrimMinIDMode
+	mock.lockXTrimMinIDMode.RUnlock()
 	return calls
 }
 

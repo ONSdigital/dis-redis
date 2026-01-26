@@ -15,9 +15,11 @@ const (
 	testAccessKey = "TEST_ACCESS_KEY"
 	testSecretKey = "TEST_SECRET_KEY"
 
-	testRegion  = "eu-west-2"
-	testHost    = "example.memorydb.us-east-1.amazonaws.com:6379"
-	testService = "memorydb"
+	testClusterName = "example-cluster"
+	testRegion      = "eu-west-2"
+	testHost        = "example.memorydb.eu-west-2.amazonaws.com:6379"
+	testService     = "memorydb"
+	testUsername    = "test-user"
 )
 
 func TestNewTokenGenerator(t *testing.T) {
@@ -30,9 +32,11 @@ func TestNewTokenGenerator(t *testing.T) {
 		Convey("When NewTokenGenerator is called", func() {
 			tokenGen, err := NewTokenGenerator(
 				ctx,
-				testRegion,
+				testClusterName,
 				testHost,
+				testRegion,
 				testService,
+				testUsername,
 			)
 			Convey("Then a TokenGenerator is returned without error", func() {
 				So(err, ShouldBeNil)
@@ -51,9 +55,11 @@ func TestGenerate(t *testing.T) {
 
 		tokenGen, err := NewTokenGenerator(
 			ctx,
-			testRegion,
+			testClusterName,
 			testHost,
+			testRegion,
 			testService,
+			testUsername,
 		)
 		So(err, ShouldBeNil)
 		So(tokenGen, ShouldNotBeNil)
@@ -80,9 +86,11 @@ func TestGenerate(t *testing.T) {
 
 		tokenGen, err := NewTokenGenerator(
 			ctx,
-			testRegion,
+			testClusterName,
 			testHost,
+			testRegion,
 			testService,
+			testUsername,
 		)
 		So(err, ShouldBeNil)
 		So(tokenGen, ShouldNotBeNil)

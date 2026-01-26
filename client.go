@@ -13,6 +13,16 @@ type Client struct {
 	redisClient redis.UniversalClient
 }
 
+// NewClusterClient returns a new Cluster Client with the provided config
+func NewClusterClient(ctx context.Context, clientConfig *ClientConfig) (*Client, error) {
+	client, err := generateClusterClient(ctx, clientConfig)
+	if err != nil {
+		return nil, fmt.Errorf("error generating cluster client: %w", err)
+	}
+
+	return NewClientWithCustomClient(ctx, clientConfig, client), nil
+}
+
 // NewClient returns a new Client with the provided config
 func NewClient(ctx context.Context, clientConfig *ClientConfig) (*Client, error) {
 	client, err := generateClient(ctx, clientConfig)
@@ -28,6 +38,28 @@ func NewClientWithCustomClient(ctx context.Context, clientConfig *ClientConfig, 
 	return &Client{
 		redisClient: client,
 	}
+}
+
+// generateClusterClient creates a Redis Cluster Client using the provided configuration
+func generateClusterClient(ctx context.Context, clientConfig *ClientConfig) (redis.UniversalClient, error) {
+	options, err := clientConfig.Get(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("error getting client config: %w", err)
+	}
+
+	clusterClient := redis.NewClusterClient(&redis.ClusterOptions{
+		Addrs:    []string{options.Addr},
+		Username: options.Username,
+		NewClient: func(opt *redis.Options) *redis.Client {
+			return redis.NewClient(&redis.Options{
+				Addr:                       opt.Addr,
+				CredentialsProviderContext: options.CredentialsProviderContext,
+				TLSConfig:                  options.TLSConfig,
+			})
+		},
+	})
+
+	return clusterClient, nil
 }
 
 // generateClient creates a Redis Client using the provided configuration

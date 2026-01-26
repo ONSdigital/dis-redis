@@ -12,9 +12,10 @@ import (
 // ClientConfig exposes the optional configurable parameters for a client to overwrite default redis options values.
 // Any value that is not provided will use the default redis options value.
 type ClientConfig struct {
-	Region   string
-	Username string
-	Service  string
+	ClusterName string
+	Region      string
+	Service     string
+	Username    string
 	// go-redis config overrides
 	Address   string
 	Database  *int
@@ -42,8 +43,12 @@ func (c *ClientConfig) Get(ctx context.Context) (*redis.Options, error) {
 		cfg.TLSConfig = c.TLSConfig
 	}
 
+	if c.Username != "" {
+		cfg.Username = c.Username
+	}
+
 	if c.Region != "" && c.Username != "" && c.Service != "" {
-		credsProvider, err := getAWSCredsProvider(ctx, cfg.Addr, c.Region, c.Username, c.Service)
+		credsProvider, err := getAWSCredsProvider(ctx, c.ClusterName, c.Address, c.Region, c.Service, c.Username)
 		if err != nil {
 			return nil, fmt.Errorf("error getting AWS credentials provider: %w", err)
 		}
@@ -62,14 +67,14 @@ func getDefaultConfig() *redis.Options {
 	}
 }
 
-func getAWSCredsProvider(ctx context.Context, endpoint, region, username, service string) (func(context.Context) (string, string, error), error) {
-	tokenGenerator, err := awsauth.NewTokenGenerator(ctx, region, endpoint, service)
+func getAWSCredsProvider(ctx context.Context, clusterName, endpoint, region, service, username string) (func(context.Context) (string, string, error), error) {
+	tokenGenerator, err := awsauth.NewTokenGenerator(ctx, clusterName, endpoint, region, service, username)
 	if err != nil {
 		return nil, fmt.Errorf("error creating token generator: %w", err)
 	}
 
-	credsProvider := func(context.Context) (string, string, error) {
-		token, err := tokenGenerator.Generate(ctx)
+	credsProvider := func(credsCtx context.Context) (string, string, error) {
+		token, err := tokenGenerator.Generate(credsCtx)
 		return username, token, err
 	}
 

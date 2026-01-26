@@ -13,8 +13,9 @@ import (
 )
 
 const (
-	TestKey   = "testKey"
-	TestValue = "testValue"
+	TestKey     = "testKey"
+	TestValue   = "testValue"
+	testAddress = "localhost:6379"
 )
 
 func TestNewClient(t *testing.T) {
@@ -27,7 +28,7 @@ func TestNewClient(t *testing.T) {
 			So(err, ShouldBeNil)
 
 			expectedDatabase := 0
-			expectedAddress := "localhost:6379"
+			expectedAddress := testAddress
 
 			if c, ok := client.redisClient.(*redis.Client); ok {
 				actualOptions := c.Options()
@@ -57,6 +58,28 @@ func TestNewClient(t *testing.T) {
 			actualResponse, err := client.redisClient.Get(ctx, "ping").Result()
 			So(err, ShouldBeNil)
 			So(actualResponse, ShouldEqual, expectedResponse)
+		})
+	})
+}
+
+func TestNewClusterClient(t *testing.T) {
+	Convey("When a ClusterClient is created with no options passed", t, func() {
+		ctx := context.Background()
+
+		client, err := NewClusterClient(ctx, &ClientConfig{})
+
+		Convey("The default configuration should be present", func() {
+			So(err, ShouldBeNil)
+
+			expectedDatabase := 0
+			expectedAddress := testAddress
+
+			if c, ok := client.redisClient.(*redis.Client); ok {
+				actualOptions := c.Options()
+
+				So(actualOptions.DB, ShouldEqual, expectedDatabase)
+				So(actualOptions.Addr, ShouldEqual, expectedAddress)
+			}
 		})
 	})
 }
