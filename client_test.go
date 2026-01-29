@@ -117,7 +117,7 @@ func TestClient_GetValue(t *testing.T) {
 			Convey("It should return an error with a 'not found' message", func() {
 				So(err, ShouldNotBeNil)
 				So(val, ShouldBeEmpty)
-				So(err.Error(), ShouldContainSubstring, "not found")
+				So(err.Error(), ShouldEqual, ErrKeyNotFound.Error())
 			})
 		})
 

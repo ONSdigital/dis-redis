@@ -13,6 +13,10 @@ type Client struct {
 	redisClient redis.UniversalClient
 }
 
+var (
+	ErrKeyNotFound = errors.New("key not found")
+)
+
 // NewClusterClient returns a new Cluster Client with the provided config
 func NewClusterClient(ctx context.Context, clientConfig *ClientConfig) (*Client, error) {
 	client, err := generateClusterClient(ctx, clientConfig)
@@ -72,11 +76,16 @@ func generateClient(ctx context.Context, clientConfig *ClientConfig) (redis.Univ
 	return redis.NewClient(options), nil
 }
 
+// Close the redis client connection
+func (cli *Client) Close(ctx context.Context) error {
+	return cli.redisClient.Close()
+}
+
 // GetValue retrieves the value for a given key from Redis and returns it as a string.
 func (cli *Client) GetValue(ctx context.Context, key string) (string, error) {
 	val, err := cli.redisClient.Get(ctx, key).Result()
 	if errors.Is(err, redis.Nil) {
-		return "", fmt.Errorf("key %s not found", key)
+		return "", ErrKeyNotFound
 	} else if err != nil {
 		return "", fmt.Errorf("error getting value for key %s: %w", key, err)
 	}
@@ -144,7 +153,7 @@ func (cli *Client) DeleteValue(ctx context.Context, key string) error {
 
 	if result == 0 {
 		// If the result is 0, it means the key does not exist
-		return fmt.Errorf("key not found: %s", key)
+		return ErrKeyNotFound
 	}
 
 	return nil
