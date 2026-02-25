@@ -168,14 +168,9 @@ func TestClient_GetKeyValuePairs(t *testing.T) {
 			return cmd
 		}
 
-		// Mock MGetFunc to return values for given keys
-		mockRedisClient.MGetFunc = func(ctx context.Context, keys ...string) *redis.SliceCmd {
-			cmd := redis.NewSliceCmd(ctx)
-			vals := make([]interface{}, len(keys))
-			for i, key := range keys {
-				vals[i] = fmt.Sprintf("val_for_%s", key)
-			}
-			cmd.SetVal(vals)
+		mockRedisClient.GetFunc = func(ctx context.Context, key string) *redis.StringCmd {
+			cmd := redis.NewStringCmd(ctx, key)
+			cmd.SetVal(fmt.Sprintf("val_for_%s", key))
 			return cmd
 		}
 
@@ -227,6 +222,114 @@ func TestClient_GetKeyValuePairs(t *testing.T) {
 							"key15": "val_for_key15",
 						})
 					})
+				})
+			})
+		})
+	})
+
+	Convey("Given a mock Redis client where scan returns an error", t, func() {
+		mockRedisClient.ScanFunc = func(ctx context.Context, cursor uint64, pattern string, count int64) *redis.ScanCmd {
+			cmd := redis.NewScanCmd(ctx, mockCmdable, cursor, pattern, count)
+			cmd.SetErr(fmt.Errorf("scan failed"))
+			return cmd
+		}
+
+		client := &Client{redisClient: mockRedisClient}
+
+		Convey("When calling GetKeyValuePairs", func() {
+			results, nextCursor, err := client.GetKeyValuePairs(ctx, match, count, 0)
+
+			Convey("It should return an error and no key-value pairs", func() {
+				So(err, ShouldNotBeNil)
+				So(err.Error(), ShouldContainSubstring, "error scanning keys")
+				So(results, ShouldBeNil)
+				So(nextCursor, ShouldEqual, 0)
+			})
+		})
+	})
+
+	Convey("Given a mock Redis client with paginated data that returns an error", t, func() {
+		mockRedisClient.ScanFunc = func(ctx context.Context, cursor uint64, pattern string, count int64) *redis.ScanCmd {
+			cmd := redis.NewScanCmd(ctx, mockCmdable, cursor, pattern, count)
+			switch cursor {
+			case 0:
+				cmd.SetVal([]string{"key1", "key2", "key3", "key4", "key5"}, 1)
+			case 1:
+				cmd.SetVal([]string{"key6", "key7", "key8", "key9", "key10"}, 2)
+			default:
+				cmd.SetVal([]string{}, 0)
+			}
+			return cmd
+		}
+
+		mockRedisClient.GetFunc = func(ctx context.Context, key string) *redis.StringCmd {
+			cmd := redis.NewStringCmd(ctx, key)
+			if key == "key7" {
+				cmd.SetErr(fmt.Errorf("error fetching value for key %s", key))
+			} else {
+				cmd.SetVal(fmt.Sprintf("val_for_%s", key))
+			}
+			return cmd
+		}
+
+		client := &Client{redisClient: mockRedisClient}
+
+		Convey("When calling GetKeyValuePairs for page 1", func() {
+			results, nextCursor, err := client.GetKeyValuePairs(ctx, match, count, 0)
+
+			Convey("It should return first 5 key-value pairs without error", func() {
+				So(err, ShouldBeNil)
+				So(nextCursor, ShouldEqual, 1)
+				So(results, ShouldResemble, map[string]string{
+					"key1": "val_for_key1",
+					"key2": "val_for_key2",
+					"key3": "val_for_key3",
+					"key4": "val_for_key4",
+					"key5": "val_for_key5",
+				})
+			})
+
+			Convey("Then calling GetKeyValuePairs for page 2", func() {
+				results2, nextCursor2, err2 := client.GetKeyValuePairs(ctx, match, count, nextCursor)
+
+				Convey("It should return an error due to key7", func() {
+					So(err2, ShouldNotBeNil)
+					So(err2.Error(), ShouldContainSubstring, "error fetching value for key")
+					So(results2, ShouldBeNil)
+					So(nextCursor2, ShouldEqual, 0)
+				})
+			})
+		})
+	})
+
+	Convey("Given a mock Redis client where some keys are missing", t, func() {
+		mockRedisClient.ScanFunc = func(ctx context.Context, cursor uint64, pattern string, count int64) *redis.ScanCmd {
+			cmd := redis.NewScanCmd(ctx, mockCmdable, cursor, pattern, count)
+			cmd.SetVal([]string{"key1", "key2", "key3"}, 0)
+			return cmd
+		}
+
+		mockRedisClient.GetFunc = func(ctx context.Context, key string) *redis.StringCmd {
+			cmd := redis.NewStringCmd(ctx, key)
+			if key == "key2" {
+				cmd.SetErr(redis.Nil)
+			} else {
+				cmd.SetVal(fmt.Sprintf("val_for_%s", key))
+			}
+			return cmd
+		}
+
+		client := &Client{redisClient: mockRedisClient}
+
+		Convey("When calling GetKeyValuePairs", func() {
+			results, nextCursor, err := client.GetKeyValuePairs(ctx, match, count, 0)
+
+			Convey("It should return only the keys that exist and skip missing ones", func() {
+				So(err, ShouldBeNil)
+				So(nextCursor, ShouldEqual, 0)
+				So(results, ShouldResemble, map[string]string{
+					"key1": "val_for_key1",
+					"key3": "val_for_key3",
 				})
 			})
 		})

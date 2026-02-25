@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -105,9 +106,34 @@ func (cli *Client) GetKeyValuePairs(ctx context.Context, matchPattern string, co
 
 	// If we have keys, get the values for those keys
 	if len(keys) > 0 {
-		values, err := cli.redisClient.MGet(ctx, keys...).Result()
-		if err != nil {
-			return nil, 0, fmt.Errorf("error fetching values for keys: %w", err)
+		values := make([]interface{}, len(keys))
+		errs := make([]error, len(keys))
+		var wg sync.WaitGroup
+		wg.Add(len(keys))
+
+		for i, key := range keys {
+			go func(i int, key string) {
+				defer wg.Done()
+				val, err := cli.GetValue(ctx, key)
+				if err != nil && err != ErrKeyNotFound {
+					errs[i] = err
+					return
+				}
+				if err == ErrKeyNotFound {
+					values[i] = nil
+				} else {
+					values[i] = val
+				}
+			}(i, key)
+		}
+
+		wg.Wait()
+
+		// Check for any errors
+		for _, e := range errs {
+			if e != nil {
+				return nil, 0, fmt.Errorf("error fetching values for keys: %w", e)
+			}
 		}
 
 		// Add the key-value pairs to the map
