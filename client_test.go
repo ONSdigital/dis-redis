@@ -498,3 +498,99 @@ func TestClient_DeleteValue(t *testing.T) {
 		})
 	})
 }
+
+func TestClient_SetAdd(t *testing.T) {
+	ctx := context.Background()
+	mockRedisClient := &mocks.GoRedisClientMock{}
+	client := &Client{
+		redisClient: mockRedisClient,
+	}
+
+	Convey("Given a mocked Redis client", t, func() {
+		Convey("When adding members to a set", func() {
+			mockRedisClient.SAddFunc = func(ctx context.Context, key string, members ...interface{}) *redis.IntCmd {
+				cmd := redis.NewIntCmd(ctx, "sadd", key)
+				cmd.SetVal(2)
+				return cmd
+			}
+
+			err := client.SetAdd(ctx, "testSet", "member1", "member2")
+
+			Convey("Then it should not return an error", func() {
+				So(err, ShouldBeNil)
+			})
+
+			Convey("Then the SAdd function should receive the key and members", func() {
+				calls := mockRedisClient.SAddCalls()
+				So(calls, ShouldNotBeEmpty)
+				latestCall := calls[len(calls)-1]
+				So(latestCall.Key, ShouldEqual, "testSet")
+				So(latestCall.Members, ShouldResemble, []interface{}{"member1", "member2"})
+			})
+		})
+
+		Convey("When Redis returns an error", func() {
+			mockRedisClient.SAddFunc = func(ctx context.Context, key string, members ...interface{}) *redis.IntCmd {
+				cmd := redis.NewIntCmd(ctx, "sadd", key)
+				cmd.SetErr(errors.New("Redis error"))
+				return cmd
+			}
+
+			err := client.SetAdd(ctx, "testSet", "member1")
+
+			Convey("Then it should return the correct error message", func() {
+				So(err, ShouldNotBeNil)
+				So(err.Error(), ShouldContainSubstring, "failed to add members to set in Redis")
+				So(err.Error(), ShouldContainSubstring, "Redis error")
+			})
+		})
+	})
+}
+
+func TestClient_SetRem(t *testing.T) {
+	ctx := context.Background()
+	mockRedisClient := &mocks.GoRedisClientMock{}
+	client := &Client{
+		redisClient: mockRedisClient,
+	}
+
+	Convey("Given a mocked Redis client", t, func() {
+		Convey("When removing members from a set", func() {
+			mockRedisClient.SRemFunc = func(ctx context.Context, key string, members ...interface{}) *redis.IntCmd {
+				cmd := redis.NewIntCmd(ctx, "srem", key)
+				cmd.SetVal(2)
+				return cmd
+			}
+
+			err := client.SetRem(ctx, "testSet", "member1", "member2")
+
+			Convey("Then it should not return an error", func() {
+				So(err, ShouldBeNil)
+			})
+
+			Convey("Then the SRem function should receive the key and members", func() {
+				calls := mockRedisClient.SRemCalls()
+				So(calls, ShouldNotBeEmpty)
+				latestCall := calls[len(calls)-1]
+				So(latestCall.Key, ShouldEqual, "testSet")
+				So(latestCall.Members, ShouldResemble, []interface{}{"member1", "member2"})
+			})
+		})
+
+		Convey("When Redis returns an error", func() {
+			mockRedisClient.SRemFunc = func(ctx context.Context, key string, members ...interface{}) *redis.IntCmd {
+				cmd := redis.NewIntCmd(ctx, "srem", key)
+				cmd.SetErr(errors.New("Redis error"))
+				return cmd
+			}
+
+			err := client.SetRem(ctx, "testSet", "member1")
+
+			Convey("Then it should return the correct error message", func() {
+				So(err, ShouldNotBeNil)
+				So(err.Error(), ShouldContainSubstring, "failed to remove members from set in Redis")
+				So(err.Error(), ShouldContainSubstring, "Redis error")
+			})
+		})
+	})
+}

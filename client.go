@@ -184,3 +184,21 @@ func (cli *Client) DeleteValue(ctx context.Context, key string) error {
 
 	return nil
 }
+
+// SetAdd adds one or more members to a set in Redis. If the set does not exist, it will be created.
+func (cli *Client) SetAdd(ctx context.Context, key string, members ...interface{}) error {
+	err := cli.redisClient.SAdd(ctx, key, members...).Err()
+	if err != nil {
+		return fmt.Errorf("failed to add members to set in Redis: %w", err)
+	}
+	return nil
+}
+
+// SetRem removes one or more members from a set in Redis. If a member does not exist in the set, it will be ignored.
+func (cli *Client) SetRem(ctx context.Context, key string, members ...interface{}) error {
+	err := cli.redisClient.SRem(ctx, key, members...).Err()
+	if err != nil {
+		return fmt.Errorf("failed to remove members from set in Redis: %w", err)
+	}
+	return nil
+}
