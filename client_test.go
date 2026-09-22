@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net"
 	"testing"
 	"time"
 
@@ -592,5 +593,30 @@ func TestClient_SetRem(t *testing.T) {
 				So(err.Error(), ShouldContainSubstring, "Redis error")
 			})
 		})
+	})
+}
+
+func TestClient_SetValueAndAddToSet(t *testing.T) {
+	ctx := context.Background()
+	pipelineClient := redis.NewClient(&redis.Options{
+		Dialer: func(ctx context.Context, network, addr string) (net.Conn, error) {
+			return nil, errors.New("pipeline connection error")
+		},
+		MaxRetries: -1,
+	})
+	defer pipelineClient.Close()
+
+	mockRedisClient := &mocks.GoRedisClientMock{
+		TxPipelineFunc: func() redis.Pipeliner {
+			return pipelineClient.TxPipeline()
+		},
+	}
+	client := &Client{redisClient: mockRedisClient}
+
+	Convey("When setting a value and adding members to a set through a transaction", t, func() {
+		err := client.SetValueAndAddToSet(ctx, "fwd:/key1", "/val_for_key1", 0, "rev:/val_for_key1", "/key1")
+
+		So(err, ShouldNotBeNil)
+		So(mockRedisClient.TxPipelineCalls(), ShouldHaveLength, 1)
 	})
 }

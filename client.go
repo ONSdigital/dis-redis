@@ -202,3 +202,16 @@ func (cli *Client) SetRem(ctx context.Context, key string, members ...interface{
 	}
 	return nil
 }
+
+// SetValueAndAddToSet sets a value and adds members to a set in a single Redis pipeline.
+func (cli *Client) SetValueAndAddToSet(ctx context.Context, valueKey string, value interface{}, expiration time.Duration, setKey string, members ...interface{}) error {
+	pipe := cli.redisClient.TxPipeline()
+	pipe.Set(ctx, valueKey, value, expiration)
+	pipe.SAdd(ctx, setKey, members...)
+
+	if _, err := pipe.Exec(ctx); err != nil {
+		return fmt.Errorf("failed to execute Redis pipeline: %w", err)
+	}
+
+	return nil
+}
