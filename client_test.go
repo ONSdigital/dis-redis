@@ -620,3 +620,104 @@ func TestClient_SetValueAndAddToSet(t *testing.T) {
 		So(mockRedisClient.TxPipelineCalls(), ShouldHaveLength, 1)
 	})
 }
+
+func TestClient_SetValueAndAddToSet_RollsBackSetOnSetAddFailure(t *testing.T) {
+	ctx := context.Background()
+	setCmd := redis.NewStatusCmd(ctx, "set", "fwd:/key1")
+	setCmd.SetVal("OK")
+	setAddCmd := redis.NewIntCmd(ctx, "sadd", "rev:/val_for_key1")
+	setAddCmd.SetErr(errors.New("SADD failed"))
+	pipeline := &transactionPipelineMock{
+		setCmd:    setCmd,
+		setAddCmd: setAddCmd,
+		execErr:   setAddCmd.Err(),
+	}
+
+	mockRedisClient := &mocks.GoRedisClientMock{
+		TxPipelineFunc: func() redis.Pipeliner {
+			return pipeline
+		},
+		DelFunc: func(ctx context.Context, keys ...string) *redis.IntCmd {
+			cmd := redis.NewIntCmd(ctx, "del", keys)
+			cmd.SetVal(1)
+			return cmd
+		},
+	}
+	client := &Client{redisClient: mockRedisClient}
+
+	Convey("When adding to the reverse set fails after setting the value", t, func() {
+		err := client.SetValueAndAddToSet(ctx, "fwd:/key1", "/val_for_key1", 0, "rev:/val_for_key1", "/key1")
+
+		So(err, ShouldNotBeNil)
+		So(err.Error(), ShouldContainSubstring, "failed to execute Redis transaction")
+		So(mockRedisClient.DelCalls(), ShouldHaveLength, 1)
+		So(mockRedisClient.DelCalls()[0].Keys, ShouldResemble, []string{"fwd:/key1"})
+	})
+}
+
+func TestClient_SetValueAndAddToSet_RollbackDeletesExistingValueOnSetAddFailure(t *testing.T) {
+	ctx := context.Background()
+	forwardValue := "/val_for_key1"
+	forwardValueHistory := []string{forwardValue}
+	setCmd := redis.NewStatusCmd(ctx, "set", "fwd:/key1")
+	setCmd.SetVal("OK")
+	setAddCmd := redis.NewIntCmd(ctx, "sadd", "rev:/val_2_for_key1")
+	setAddCmd.SetErr(errors.New("SADD failed"))
+	pipeline := &transactionPipelineMock{
+		setCmd:    setCmd,
+		setAddCmd: setAddCmd,
+		execErr:   setAddCmd.Err(),
+		onSet: func(value interface{}) {
+			forwardValue = value.(string)
+			forwardValueHistory = append(forwardValueHistory, forwardValue)
+		},
+	}
+
+	mockRedisClient := &mocks.GoRedisClientMock{
+		TxPipelineFunc: func() redis.Pipeliner {
+			return pipeline
+		},
+		DelFunc: func(ctx context.Context, keys ...string) *redis.IntCmd {
+			forwardValue = ""
+			forwardValueHistory = append(forwardValueHistory, forwardValue)
+			cmd := redis.NewIntCmd(ctx, "del", keys)
+			cmd.SetVal(1)
+			return cmd
+		},
+	}
+	client := &Client{redisClient: mockRedisClient}
+
+	Convey("When a new reverse-set update fails for a key with an existing value", t, func() {
+		err := client.SetValueAndAddToSet(ctx, "fwd:/key1", "/val_2_for_key1", 0, "rev:/val_2_for_key1", "/key1")
+
+		So(err, ShouldNotBeNil)
+		So(err.Error(), ShouldContainSubstring, "failed to execute Redis transaction")
+		So(forwardValueHistory, ShouldResemble, []string{"/val_for_key1", "/val_2_for_key1", ""})
+		So(forwardValue, ShouldBeEmpty)
+		So(mockRedisClient.DelCalls(), ShouldHaveLength, 1)
+		So(mockRedisClient.DelCalls()[0].Keys, ShouldResemble, []string{"fwd:/key1"})
+	})
+}
+
+type transactionPipelineMock struct {
+	redis.Pipeliner
+	setCmd    *redis.StatusCmd
+	setAddCmd *redis.IntCmd
+	execErr   error
+	onSet     func(value interface{})
+}
+
+func (pipeline *transactionPipelineMock) Set(ctx context.Context, key string, value interface{}, expiration time.Duration) *redis.StatusCmd {
+	if pipeline.onSet != nil {
+		pipeline.onSet(value)
+	}
+	return pipeline.setCmd
+}
+
+func (pipeline *transactionPipelineMock) SAdd(ctx context.Context, key string, members ...interface{}) *redis.IntCmd {
+	return pipeline.setAddCmd
+}
+
+func (pipeline *transactionPipelineMock) Exec(ctx context.Context) ([]redis.Cmder, error) {
+	return []redis.Cmder{pipeline.setCmd, pipeline.setAddCmd}, pipeline.execErr
+}
