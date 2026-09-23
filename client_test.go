@@ -560,6 +560,166 @@ func TestClient_DeleteValue(t *testing.T) {
 	})
 }
 
+func TestClient_GetSetMemberCount(t *testing.T) {
+	ctx := context.Background()
+	mockRedisClient := &mocks.GoRedisClientMock{}
+	client := &Client{redisClient: mockRedisClient}
+
+	Convey("Given a mocked Redis client", t, func() {
+		Convey("When getting the count of members in a set", func() {
+			mockRedisClient.SCardFunc = func(ctx context.Context, key string) *redis.IntCmd {
+				cmd := redis.NewIntCmd(ctx, "scard", key)
+				cmd.SetVal(3)
+				return cmd
+			}
+
+			count, err := client.GetSetMemberCount(ctx, "testSet")
+
+			Convey("Then it should return the count without error", func() {
+				So(err, ShouldBeNil)
+				So(count, ShouldEqual, 3)
+			})
+		})
+
+		Convey("When Redis returns an error while counting set members", func() {
+			mockRedisClient.SCardFunc = func(ctx context.Context, key string) *redis.IntCmd {
+				cmd := redis.NewIntCmd(ctx, "scard", key)
+				cmd.SetErr(errors.New("Redis error"))
+				return cmd
+			}
+
+			count, err := client.GetSetMemberCount(ctx, "testSet")
+
+			Convey("Then it should return the wrapped error", func() {
+				So(err, ShouldNotBeNil)
+				So(count, ShouldEqual, 0)
+				So(err.Error(), ShouldContainSubstring, "failed to get member count for set testSet from Redis")
+				So(err.Error(), ShouldContainSubstring, "Redis error")
+			})
+		})
+	})
+}
+
+func TestClient_GetSetMemberValues(t *testing.T) {
+	ctx := context.Background()
+	setKey := "testSet"
+	matchPattern := "member*"
+	valuePrefix := "value:"
+	count := int64(2)
+
+	mockCmdable := func(ctx context.Context, cmd redis.Cmder) error {
+		return nil
+	}
+
+	mockRedisClient := &mocks.GoRedisClientMock{}
+
+	Convey("Given a mocked Redis client with paginated set members", t, func() {
+		mockRedisClient.SScanFunc = func(ctx context.Context, key string, cursor uint64, match string, count int64) *redis.ScanCmd {
+			cmd := redis.NewScanCmd(ctx, mockCmdable, cursor, match, count)
+			switch cursor {
+			case 0:
+				cmd.SetVal([]string{"member1", "member2"}, 1)
+			case 1:
+				cmd.SetVal([]string{"missing", "member3"}, 0)
+			default:
+				cmd.SetVal([]string{}, 0)
+			}
+			return cmd
+		}
+
+		mockRedisClient.GetFunc = func(ctx context.Context, key string) *redis.StringCmd {
+			cmd := redis.NewStringCmd(ctx, key)
+			switch key {
+			case "value:member1":
+				cmd.SetVal("value_for_member1")
+			case "value:member2":
+				cmd.SetVal("value_for_member2")
+			case "value:member3":
+				cmd.SetVal("value_for_member3")
+			case "value:missing":
+				cmd.SetErr(redis.Nil)
+			default:
+				cmd.SetErr(fmt.Errorf("unexpected key %s", key))
+			}
+			return cmd
+		}
+
+		client := &Client{redisClient: mockRedisClient}
+
+		Convey("When getting the first page of set member values", func() {
+			results, nextCursor, err := client.GetSetMemberValues(ctx, setKey, matchPattern, valuePrefix, count, 0)
+
+			Convey("Then it should return the first page of values", func() {
+				So(err, ShouldBeNil)
+				So(nextCursor, ShouldEqual, 1)
+				So(results, ShouldResemble, map[string]string{
+					"member1": "value_for_member1",
+					"member2": "value_for_member2",
+				})
+			})
+
+			Convey("Then calling GetSetMemberValues for the next page should skip missing values", func() {
+				results2, nextCursor2, err2 := client.GetSetMemberValues(ctx, setKey, matchPattern, valuePrefix, count, nextCursor)
+
+				So(err2, ShouldBeNil)
+				So(nextCursor2, ShouldEqual, 0)
+				So(results2, ShouldResemble, map[string]string{
+					"member3": "value_for_member3",
+				})
+			})
+		})
+	})
+
+	Convey("Given a mocked Redis client where scanning set members fails", t, func() {
+		mockRedisClient.SScanFunc = func(ctx context.Context, key string, cursor uint64, match string, count int64) *redis.ScanCmd {
+			cmd := redis.NewScanCmd(ctx, mockCmdable, cursor, match, count)
+			cmd.SetErr(errors.New("scan failed"))
+			return cmd
+		}
+
+		client := &Client{redisClient: mockRedisClient}
+
+		Convey("When getting set member values", func() {
+			results, nextCursor, err := client.GetSetMemberValues(ctx, setKey, matchPattern, valuePrefix, count, 0)
+
+			Convey("Then it should return the scan error", func() {
+				So(err, ShouldNotBeNil)
+				So(err.Error(), ShouldContainSubstring, "scan failed")
+				So(results, ShouldBeNil)
+				So(nextCursor, ShouldEqual, 0)
+			})
+		})
+	})
+
+	Convey("Given a mocked Redis client where fetching a set member value fails", t, func() {
+		mockRedisClient.SScanFunc = func(ctx context.Context, key string, cursor uint64, match string, count int64) *redis.ScanCmd {
+			cmd := redis.NewScanCmd(ctx, mockCmdable, cursor, match, count)
+			cmd.SetVal([]string{"member1"}, 0)
+			return cmd
+		}
+
+		mockRedisClient.GetFunc = func(ctx context.Context, key string) *redis.StringCmd {
+			cmd := redis.NewStringCmd(ctx, key)
+			cmd.SetErr(errors.New("get failed"))
+			return cmd
+		}
+
+		client := &Client{redisClient: mockRedisClient}
+
+		Convey("When getting set member values", func() {
+			results, nextCursor, err := client.GetSetMemberValues(ctx, setKey, matchPattern, valuePrefix, count, 0)
+
+			Convey("Then it should return the get error", func() {
+				So(err, ShouldNotBeNil)
+				So(err.Error(), ShouldContainSubstring, "error getting value for key value:member1")
+				So(err.Error(), ShouldContainSubstring, "get failed")
+				So(results, ShouldBeNil)
+				So(nextCursor, ShouldEqual, 0)
+			})
+		})
+	})
+}
+
 func TestClient_SetAdd(t *testing.T) {
 	ctx := context.Background()
 	mockRedisClient := &mocks.GoRedisClientMock{}

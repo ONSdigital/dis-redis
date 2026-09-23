@@ -190,6 +190,39 @@ func (cli *Client) DeleteValue(ctx context.Context, key string) error {
 	return nil
 }
 
+// GetSetMemberCount returns the number of members in a Redis set.
+func (cli *Client) GetSetMemberCount(ctx context.Context, setKey string) (int64, error) {
+	count, err := cli.redisClient.SCard(ctx, setKey).Result()
+	if err != nil {
+		return 0, fmt.Errorf("failed to get member count for set %s from Redis: %w", setKey, err)
+	}
+	return count, nil
+}
+
+// GetSetMemberValues retrieves members of a Redis set that match a given pattern,
+// along with their corresponding values prefixed by an optional valuePrefix.
+// It supports pagination using a cursor and count.
+func (cli *Client) GetSetMemberValues(ctx context.Context, setKey, matchPattern, valuePrefix string, count int64, cursor uint64) (results map[string]string, nextCursor uint64, err error) {
+	members, nextCursor, err := cli.redisClient.SScan(ctx, setKey, cursor, matchPattern, count).Result()
+	if err != nil {
+		return nil, 0, err
+	}
+
+	results = make(map[string]string, len(members))
+	for _, memberKey := range members {
+		value, err := cli.GetValue(ctx, valuePrefix+memberKey)
+		if errors.Is(err, ErrKeyNotFound) {
+			continue
+		}
+		if err != nil {
+			return nil, 0, err
+		}
+		results[memberKey] = value
+	}
+
+	return results, nextCursor, nil
+}
+
 // SetAdd adds one or more members to a set in Redis. If the set does not exist, it will be created.
 func (cli *Client) SetAdd(ctx context.Context, key string, members ...interface{}) error {
 	err := cli.redisClient.SAdd(ctx, key, members...).Err()
