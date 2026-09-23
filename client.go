@@ -94,6 +94,11 @@ func (cli *Client) GetValue(ctx context.Context, key string) (string, error) {
 	return val, nil
 }
 
+// GetKeys retrieves a set of keys from Redis based on a match pattern and given cursor.
+func (cli *Client) GetKeys(ctx context.Context, matchPattern string, count int64, cursor uint64) (keys []string, newCursor uint64, err error) {
+	return cli.redisClient.Scan(ctx, cursor, matchPattern, count).Result()
+}
+
 // GetKeyValuePairs retrieves a set of key-value pairs from Redis based on a match pattern and a given cursor.
 func (cli *Client) GetKeyValuePairs(ctx context.Context, matchPattern string, count int64, cursor uint64) (keyValuePairs map[string]string, newCursor uint64, err error) {
 	keyValuePairs = make(map[string]string)

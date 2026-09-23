@@ -140,6 +140,66 @@ func TestClient_GetValue(t *testing.T) {
 	})
 }
 
+func TestClient_GetKeys(t *testing.T) {
+	ctx := context.Background()
+	match := "prefix:*"
+	count := int64(5)
+	cursor := uint64(7)
+
+	mockCmdable := func(ctx context.Context, cmd redis.Cmder) error {
+		return nil
+	}
+
+	mockRedisClient := &mocks.GoRedisClientMock{}
+	client := &Client{
+		redisClient: mockRedisClient,
+	}
+
+	Convey("Given a mocked Redis client", t, func() {
+		Convey("When Scan returns keys", func() {
+			mockRedisClient.ScanFunc = func(ctx context.Context, providedCursor uint64, pattern string, providedCount int64) *redis.ScanCmd {
+				cmd := redis.NewScanCmd(ctx, mockCmdable, providedCursor, pattern, providedCount)
+				cmd.SetVal([]string{"key1", "key2"}, 9)
+				return cmd
+			}
+
+			keys, nextCursor, err := client.GetKeys(ctx, match, count, cursor)
+
+			Convey("Then it should return the keys and next cursor", func() {
+				So(err, ShouldBeNil)
+				So(keys, ShouldResemble, []string{"key1", "key2"})
+				So(nextCursor, ShouldEqual, 9)
+			})
+
+			Convey("Then the Scan function should receive the cursor, pattern, and count", func() {
+				calls := mockRedisClient.ScanCalls()
+				So(calls, ShouldNotBeEmpty)
+				latestCall := calls[len(calls)-1]
+				So(latestCall.Cursor, ShouldEqual, cursor)
+				So(latestCall.Match, ShouldEqual, match)
+				So(latestCall.Count, ShouldEqual, count)
+			})
+		})
+
+		Convey("When Scan returns an error", func() {
+			mockRedisClient.ScanFunc = func(ctx context.Context, providedCursor uint64, pattern string, providedCount int64) *redis.ScanCmd {
+				cmd := redis.NewScanCmd(ctx, mockCmdable, providedCursor, pattern, providedCount)
+				cmd.SetErr(errors.New("scan failed"))
+				return cmd
+			}
+
+			keys, nextCursor, err := client.GetKeys(ctx, match, count, cursor)
+
+			Convey("Then it should return the scan error", func() {
+				So(err, ShouldNotBeNil)
+				So(err.Error(), ShouldContainSubstring, "scan failed")
+				So(keys, ShouldBeNil)
+				So(nextCursor, ShouldEqual, 0)
+			})
+		})
+	})
+}
+
 func TestClient_GetKeyValuePairs(t *testing.T) {
 	ctx := context.Background()
 	match := "prefix:*"
