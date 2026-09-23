@@ -203,21 +203,15 @@ func (cli *Client) SetRem(ctx context.Context, key string, members ...interface{
 	return nil
 }
 
-// SetValueAndAddToSet sets a value and adds members to a set in a Redis transaction.
-func (cli *Client) SetValueAndAddToSet(ctx context.Context, valueKey string, value interface{}, expiration time.Duration, setKey string, members ...interface{}) error {
+// Transaction queues Redis commands and executes them in a transaction.
+func (cli *Client) Transaction(ctx context.Context, queue func(redis.Pipeliner)) ([]redis.Cmder, error) {
 	pipe := cli.redisClient.TxPipeline()
-	setCmd := pipe.Set(ctx, valueKey, value, expiration)
-	setAddCmd := pipe.SAdd(ctx, setKey, members...)
+	queue(pipe)
 
-	if _, err := pipe.Exec(ctx); err != nil {
-		if setErr := setCmd.Err(); setErr != nil {
-			return fmt.Errorf("failed to set value for key %s in Redis transaction: %w", valueKey, setErr)
-		}
-		if setAddErr := setAddCmd.Err(); setAddErr != nil {
-			return fmt.Errorf("failed to add members to set for key %s in Redis transaction: %w", setKey, setAddErr)
-		}
-		return fmt.Errorf("failed to execute Redis transaction: %w", err)
+	commands, err := pipe.Exec(ctx)
+	if err != nil {
+		return commands, fmt.Errorf("failed to execute Redis transaction: %w", err)
 	}
 
-	return nil
+	return commands, nil
 }

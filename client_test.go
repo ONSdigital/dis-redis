@@ -596,7 +596,7 @@ func TestClient_SetRem(t *testing.T) {
 	})
 }
 
-func TestClient_SetValueAndAddToSet(t *testing.T) {
+func TestClient_Transaction_WhenExecutionFails(t *testing.T) {
 	ctx := context.Background()
 	pipelineClient := redis.NewClient(&redis.Options{
 		Dialer: func(ctx context.Context, network, addr string) (net.Conn, error) {
@@ -612,11 +612,63 @@ func TestClient_SetValueAndAddToSet(t *testing.T) {
 		},
 	}
 	client := &Client{redisClient: mockRedisClient}
+	queueCalled := false
 
-	Convey("When setting a value and adding members to a set through a transaction", t, func() {
-		err := client.SetValueAndAddToSet(ctx, "fwd:/key1", "/val_for_key1", 0, "rev:/val_for_key1", "/key1")
+	Convey("When queuing multiple command types through a transaction", t, func() {
+		_, err := client.Transaction(ctx, func(pipe redis.Pipeliner) {
+			queueCalled = true
+			pipe.Set(ctx, "fwd:/key1", "/val_for_key1", 0)
+			pipe.SAdd(ctx, "rev:/val_for_key1", "/key1")
+			pipe.SRem(ctx, "rev:/old-value", "/key1")
+		})
 
 		So(err, ShouldNotBeNil)
+		So(err.Error(), ShouldContainSubstring, "failed to execute Redis transaction")
+		So(err.Error(), ShouldContainSubstring, "pipeline connection error")
+		So(queueCalled, ShouldBeTrue)
+		So(mockRedisClient.TxPipelineCalls(), ShouldHaveLength, 1)
+	})
+}
+
+func TestClient_Transaction_WhenExecutionSucceeds(t *testing.T) {
+	ctx := context.Background()
+	setCmd := redis.NewStatusCmd(ctx, "set", "fwd:/key1")
+	setCmd.SetVal("OK")
+	setAddCmd := redis.NewIntCmd(ctx, "sadd", "rev:/val_for_key1")
+	setAddCmd.SetVal(1)
+	setRemCmd := redis.NewIntCmd(ctx, "srem", "rev:/old-value")
+	setRemCmd.SetVal(1)
+	expectedCommands := []redis.Cmder{setCmd, setAddCmd, setRemCmd}
+	pipeline := &mocks.GoRedisPipelinerMock{
+		SetFunc: func(ctx context.Context, key string, value interface{}, expiration time.Duration) *redis.StatusCmd {
+			return setCmd
+		},
+		SAddFunc: func(ctx context.Context, key string, members ...interface{}) *redis.IntCmd {
+			return setAddCmd
+		},
+		SRemFunc: func(ctx context.Context, key string, members ...interface{}) *redis.IntCmd {
+			return setRemCmd
+		},
+		ExecFunc: func(ctx context.Context) ([]redis.Cmder, error) {
+			return expectedCommands, nil
+		},
+	}
+	mockRedisClient := &mocks.GoRedisClientMock{
+		TxPipelineFunc: func() redis.Pipeliner {
+			return pipeline
+		},
+	}
+	client := &Client{redisClient: mockRedisClient}
+
+	Convey("When queuing multiple command types through a successful transaction", t, func() {
+		commands, err := client.Transaction(ctx, func(pipe redis.Pipeliner) {
+			pipe.Set(ctx, "fwd:/key1", "/val_for_key1", 0)
+			pipe.SAdd(ctx, "rev:/val_for_key1", "/key1")
+			pipe.SRem(ctx, "rev:/old-value", "/key1")
+		})
+
+		So(err, ShouldBeNil)
+		So(commands, ShouldResemble, expectedCommands)
 		So(mockRedisClient.TxPipelineCalls(), ShouldHaveLength, 1)
 	})
 }
