@@ -109,6 +109,25 @@ func (cli *Client) GetKeyValuePairs(ctx context.Context, matchPattern string, co
 		return nil, 0, fmt.Errorf("error scanning keys: %w", err)
 	}
 
+	// If the number of keys is less than the required count then repeat the scan until enough values are returned.
+	// Stop scanning if the cursor loops around and becomes a lower number than it was.
+	numKeys := int64(len(keys))
+	cursor = newCursor
+	var newKeys []string
+	for numKeys < count {
+		newKeys, newCursor, err = cli.redisClient.Scan(ctx, cursor, matchPattern, count).Result()
+		if err != nil {
+			return nil, 0, fmt.Errorf("error scanning more keys: %w", err)
+		}
+		keys = append(keys, newKeys...)
+		numKeys = int64(len(keys))
+		cursor = newCursor
+		if newCursor < cursor {
+			// we must have reached the end of the list of key value pairs, so we need to stop scanning
+			break
+		}
+	}
+
 	// If we have keys, get the values for those keys
 	if len(keys) > 0 {
 		values := make([]interface{}, len(keys))
