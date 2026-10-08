@@ -121,11 +121,11 @@ func (cli *Client) GetKeyValuePairs(ctx context.Context, matchPattern string, co
 		}
 		keys = append(keys, newKeys...)
 		numKeys = int64(len(keys))
-		cursor = newCursor
 		if newCursor < cursor {
 			// we must have reached the end of the list of key value pairs, so we need to stop scanning
 			break
 		}
+		cursor = newCursor
 	}
 
 	// If we have keys, get the values for those keys
