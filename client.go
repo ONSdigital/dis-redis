@@ -109,23 +109,27 @@ func (cli *Client) GetKeyValuePairs(ctx context.Context, matchPattern string, co
 		return nil, 0, fmt.Errorf("error scanning keys: %w", err)
 	}
 
-	// If the number of keys is less than the required count then repeat the scan until enough values are returned.
-	// Stop scanning if the cursor loops around and becomes a lower number than it was.
-	numKeys := int64(len(keys))
-	cursor = newCursor
-	var newKeys []string
-	for numKeys < count {
-		newKeys, newCursor, err = cli.redisClient.Scan(ctx, cursor, matchPattern, count).Result()
-		if err != nil {
-			return nil, 0, fmt.Errorf("error scanning more keys: %w", err)
-		}
-		keys = append(keys, newKeys...)
-		numKeys = int64(len(keys))
-		if newCursor < cursor {
-			// we must have reached the end of the list of key value pairs, so we need to stop scanning
-			break
-		}
+	// If the cursor has moved forward (so Redis is not empty)
+	// Then, reset the cursor and check if the number of keys is less than the required count
+	// Repeat the scan, and keep checking, until enough values are returned
+	// Stop scanning if the required count is reached or if the cursor reaches the end of the list (and loops back to the start)
+	if newCursor > cursor {
+		numKeys := int64(len(keys))
 		cursor = newCursor
+		var newKeys []string
+		for numKeys < count {
+			newKeys, newCursor, err = cli.redisClient.Scan(ctx, cursor, matchPattern, count).Result()
+			if err != nil {
+				return nil, 0, fmt.Errorf("error scanning more keys: %w", err)
+			}
+			keys = append(keys, newKeys...)
+			numKeys = int64(len(keys))
+			if newCursor < cursor {
+				// we must have reached the end of the list of key value pairs, so we need to stop scanning
+				break
+			}
+			cursor = newCursor
+		}
 	}
 
 	// If we have keys, get the values for those keys

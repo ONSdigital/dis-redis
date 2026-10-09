@@ -428,6 +428,15 @@ func TestClient_GetKeyValuePairsScansUntilCountOrCursorWrap(t *testing.T) {
 			},
 		},
 		{
+			name: "stops if redis is empty therefore the cursor has not moved forward",
+			pages: []scanPage{
+				{keys: []string{}, nextCursor: 0},
+			},
+			expectedScanCursors: []uint64{0},
+			expectedNextCursor:  0,
+			expectedResults:     map[string]string{},
+		},
+		{
 			name: "stops when the cursor wraps before collecting the count",
 			pages: []scanPage{
 				{keys: []string{"key1"}, nextCursor: 100},
