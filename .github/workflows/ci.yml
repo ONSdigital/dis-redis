@@ -1,6 +1,6 @@
 ---
 name: CI
-on: 
+on:
   push:
     branches: [main]
   pull_request:
@@ -11,7 +11,7 @@ permissions:
 
 # Single source of truth for tool versions
 env:
-  GO_VERSION: '1.26.8'
+  GO_VERSION: '1.26.9'
   GOLANGCI_LINT_VERSION: 'v2.10.1'
 
 concurrency:
