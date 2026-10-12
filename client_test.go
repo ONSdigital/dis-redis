@@ -400,7 +400,6 @@ func TestClient_GetKeyValuePairs(t *testing.T) {
 func TestClient_GetKeyValuePairsScansUntilCountOrCursorWrap(t *testing.T) {
 	ctx := context.Background()
 	match := "prefix:*"
-	count := int64(5)
 	type scanPage struct {
 		keys       []string
 		nextCursor uint64
@@ -413,6 +412,7 @@ func TestClient_GetKeyValuePairsScansUntilCountOrCursorWrap(t *testing.T) {
 		var pages = []scanPage{
 			{keys: []string{"key1", "key2"}, nextCursor: 100},
 			{keys: []string{"key3", "key4", "key5"}, nextCursor: 200},
+			{keys: []string{"key6", "key7", "key8"}, nextCursor: 10},
 		}
 		var scanCursors []uint64
 		mockRedisClient := &mocks.GoRedisClientMock{
@@ -431,7 +431,8 @@ func TestClient_GetKeyValuePairsScansUntilCountOrCursorWrap(t *testing.T) {
 		}
 		client := &Client{redisClient: mockRedisClient}
 
-		Convey("When calling GetKeyValuePairs for page 1", func() {
+		Convey("When calling GetKeyValuePairs with a count of 5", func() {
+			count := int64(5)
 			results, nextCursor, err := client.GetKeyValuePairs(ctx, match, count, 0)
 
 			Convey("It should stop after collecting the requested count", func() {
@@ -451,97 +452,66 @@ func TestClient_GetKeyValuePairsScansUntilCountOrCursorWrap(t *testing.T) {
 				So(results, ShouldResemble, expectedResults)
 			})
 		})
-	})
-}
-
-func TestClient_GetKeyValuePairsScansUntilCountOrCursorWra(t *testing.T) {
-	ctx := context.Background()
-	count := int64(5)
-	type scanPage struct {
-		keys       []string
-		nextCursor uint64
-	}
-	testCases := []struct {
-		name                string
-		pages               []scanPage
-		expectedScanCursors []uint64
-		expectedNextCursor  uint64
-		expectedResults     map[string]string
-	}{
-		{
-			name: "stops after collecting the requested count",
-			pages: []scanPage{
-				{keys: []string{"key1", "key2"}, nextCursor: 100},
-				{keys: []string{"key3", "key4", "key5"}, nextCursor: 200},
-			},
-			expectedScanCursors: []uint64{0, 100},
-			expectedNextCursor:  200,
-			expectedResults: map[string]string{
-				"key1": "value-for-key1",
-				"key2": "value-for-key2",
-				"key3": "value-for-key3",
-				"key4": "value-for-key4",
-				"key5": "value-for-key5",
-			},
-		},
-		{
-			name: "stops if redis is empty therefore the cursor has not moved forward",
-			pages: []scanPage{
-				{keys: []string{}, nextCursor: 0},
-			},
-			expectedScanCursors: []uint64{0},
-			expectedNextCursor:  0,
-			expectedResults:     map[string]string{},
-		},
-		{
-			name: "stops when the cursor wraps before collecting the count",
-			pages: []scanPage{
-				{keys: []string{"key1"}, nextCursor: 100},
-				{keys: []string{"key2"}, nextCursor: 200},
-				{keys: []string{"key3"}, nextCursor: 10},
-			},
-			expectedScanCursors: []uint64{0, 100, 200},
-			expectedNextCursor:  10,
-			expectedResults: map[string]string{
-				"key1": "value-for-key1",
-				"key2": "value-for-key2",
-				"key3": "value-for-key3",
-			},
-		},
-	}
-
-	for _, testCase := range testCases {
-		t.Run(testCase.name, func(t *testing.T) {
-			mockCmdable := func(ctx context.Context, cmd redis.Cmder) error {
-				return nil
-			}
-			var scanCursors []uint64
-			mockRedisClient := &mocks.GoRedisClientMock{
-				ScanFunc: func(ctx context.Context, cursor uint64, pattern string, providedCount int64) *redis.ScanCmd {
-					scanCursors = append(scanCursors, cursor)
-					page := testCase.pages[len(scanCursors)-1]
-					cmd := redis.NewScanCmd(ctx, mockCmdable, cursor, pattern, providedCount)
-					cmd.SetVal(page.keys, page.nextCursor)
-					return cmd
-				},
-				GetFunc: func(ctx context.Context, key string) *redis.StringCmd {
-					cmd := redis.NewStringCmd(ctx, key)
-					cmd.SetVal("value-for-" + key)
-					return cmd
-				},
-			}
-			client := &Client{redisClient: mockRedisClient}
-
-			Convey("GetKeyValuePairs stops at the expected scan boundary", t, func() {
-				results, nextCursor, err := client.GetKeyValuePairs(ctx, "prefix:*", count, 0)
-
+		Convey("When calling GetKeyValuePairs with a count of 12", func() {
+			count := int64(12)
+			results, nextCursor, err := client.GetKeyValuePairs(ctx, match, count, 0)
+			Convey("It should stop when the cursor wraps before collecting the count", func() {
+				var expectedScanCursors = []uint64{0, 100, 200}
+				var expectedNextCursor uint64 = 10
+				var expectedResults = map[string]string{
+					"key1": "value-for-key1",
+					"key2": "value-for-key2",
+					"key3": "value-for-key3",
+					"key4": "value-for-key4",
+					"key5": "value-for-key5",
+					"key6": "value-for-key6",
+					"key7": "value-for-key7",
+					"key8": "value-for-key8",
+				}
 				So(err, ShouldBeNil)
-				So(scanCursors, ShouldResemble, testCase.expectedScanCursors)
-				So(nextCursor, ShouldEqual, testCase.expectedNextCursor)
-				So(results, ShouldResemble, testCase.expectedResults)
+				So(scanCursors, ShouldResemble, expectedScanCursors)
+				So(nextCursor, ShouldEqual, expectedNextCursor)
+				So(results, ShouldResemble, expectedResults)
 			})
 		})
-	}
+	})
+
+	Convey("Given a mock Redis client with no data in it", t, func() {
+		var pages = []scanPage{
+			{keys: []string{}, nextCursor: 0},
+		}
+		var scanCursors []uint64
+		mockRedisClient := &mocks.GoRedisClientMock{
+			ScanFunc: func(ctx context.Context, cursor uint64, pattern string, providedCount int64) *redis.ScanCmd {
+				scanCursors = append(scanCursors, cursor)
+				page := pages[len(scanCursors)-1]
+				cmd := redis.NewScanCmd(ctx, mockCmdable, cursor, pattern, providedCount)
+				cmd.SetVal(page.keys, page.nextCursor)
+				return cmd
+			},
+			GetFunc: func(ctx context.Context, key string) *redis.StringCmd {
+				cmd := redis.NewStringCmd(ctx, key)
+				cmd.SetVal("value-for-" + key)
+				return cmd
+			},
+		}
+		client := &Client{redisClient: mockRedisClient}
+		Convey("When calling GetKeyValuePairs", func() {
+			count := int64(5)
+			results, nextCursor, err := client.GetKeyValuePairs(ctx, match, count, 0)
+
+			Convey("It should get no data returned because the cursor remains at 0", func() {
+				var expectedScanCursors = []uint64{0}
+				var expectedNextCursor uint64 = 0
+				var expectedResults = map[string]string{}
+
+				So(err, ShouldBeNil)
+				So(scanCursors, ShouldResemble, expectedScanCursors)
+				So(nextCursor, ShouldEqual, expectedNextCursor)
+				So(results, ShouldResemble, expectedResults)
+			})
+		})
+	})
 }
 
 func TestClient_GetTotalKeys(t *testing.T) {
