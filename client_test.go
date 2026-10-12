@@ -399,6 +399,63 @@ func TestClient_GetKeyValuePairs(t *testing.T) {
 
 func TestClient_GetKeyValuePairsScansUntilCountOrCursorWrap(t *testing.T) {
 	ctx := context.Background()
+	match := "prefix:*"
+	count := int64(5)
+	type scanPage struct {
+		keys       []string
+		nextCursor uint64
+	}
+	mockCmdable := func(ctx context.Context, cmd redis.Cmder) error {
+		return nil
+	}
+
+	Convey("Given a mock Redis client with paginated data", t, func() {
+		var pages = []scanPage{
+			{keys: []string{"key1", "key2"}, nextCursor: 100},
+			{keys: []string{"key3", "key4", "key5"}, nextCursor: 200},
+		}
+		var scanCursors []uint64
+		mockRedisClient := &mocks.GoRedisClientMock{
+			ScanFunc: func(ctx context.Context, cursor uint64, pattern string, providedCount int64) *redis.ScanCmd {
+				scanCursors = append(scanCursors, cursor)
+				page := pages[len(scanCursors)-1]
+				cmd := redis.NewScanCmd(ctx, mockCmdable, cursor, pattern, providedCount)
+				cmd.SetVal(page.keys, page.nextCursor)
+				return cmd
+			},
+			GetFunc: func(ctx context.Context, key string) *redis.StringCmd {
+				cmd := redis.NewStringCmd(ctx, key)
+				cmd.SetVal("value-for-" + key)
+				return cmd
+			},
+		}
+		client := &Client{redisClient: mockRedisClient}
+
+		Convey("When calling GetKeyValuePairs for page 1", func() {
+			results, nextCursor, err := client.GetKeyValuePairs(ctx, match, count, 0)
+
+			Convey("It should stop after collecting the requested count", func() {
+				var expectedScanCursors = []uint64{0, 100}
+				var expectedNextCursor uint64 = 200
+				var expectedResults = map[string]string{
+					"key1": "value-for-key1",
+					"key2": "value-for-key2",
+					"key3": "value-for-key3",
+					"key4": "value-for-key4",
+					"key5": "value-for-key5",
+				}
+
+				So(err, ShouldBeNil)
+				So(scanCursors, ShouldResemble, expectedScanCursors)
+				So(nextCursor, ShouldEqual, expectedNextCursor)
+				So(results, ShouldResemble, expectedResults)
+			})
+		})
+	})
+}
+
+func TestClient_GetKeyValuePairsScansUntilCountOrCursorWra(t *testing.T) {
+	ctx := context.Background()
 	count := int64(5)
 	type scanPage struct {
 		keys       []string
